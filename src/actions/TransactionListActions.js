@@ -56,7 +56,7 @@ export const fetchMoreTransactions = (walletId: string, currencyCode: string, re
     (currentCurrencyCode !== '' && currentCurrencyCode !== currencyCode) // maybe you've switched to a token wallet
   ) {
     let startEntries
-    if (nextEndIndex) {
+    if (nextEndIndex != null && nextEndIndex > 0) {
       startEntries = nextEndIndex - nextStartIndex + 1
     }
     // If startEntries is undefined / null, this means query until the end of the transaction list

@@ -117,19 +117,10 @@ export function exportTransactionsToQBOInner(
   const now = makeOfxDate(dateNow / 1000)
 
   for (const edgeTx of edgeTransactions) {
-    const TRNAMT: string = denom ? div(edgeTx.nativeAmount, denom, DECIMAL_PRECISION) : edgeTx.nativeAmount
+    const TRNAMT: string = denom != null ? div(edgeTx.nativeAmount, denom, DECIMAL_PRECISION) : edgeTx.nativeAmount
     const TRNTYPE = lt(edgeTx.nativeAmount, '0') ? 'DEBIT' : 'CREDIT'
     const DTPOSTED = makeOfxDate(edgeTx.date)
-    let NAME: string = ''
-    let amountFiat: number = 0
-    let category: string = ''
-    let notes: string = ''
-    if (edgeTx.metadata) {
-      NAME = edgeTx.metadata.name ? edgeTx.metadata.name : ''
-      amountFiat = edgeTx.metadata.amountFiat ? edgeTx.metadata.amountFiat : 0
-      category = edgeTx.metadata.category ? edgeTx.metadata.category : ''
-      notes = edgeTx.metadata.notes ? edgeTx.metadata.notes : ''
-    }
+    const { name = '', amountFiat = 0, category = '', notes = '' } = edgeTx.metadata ?? {}
     const absFiat = abs(amountFiat.toString())
     const absAmount = abs(TRNAMT)
     const CURRATE = absAmount !== '0' ? div(absFiat, absAmount, 8) : '0'
@@ -142,7 +133,7 @@ export function exportTransactionsToQBOInner(
       DTPOSTED,
       TRNAMT,
       FITID: edgeTx.txid,
-      NAME,
+      NAME: name,
       MEMO: memo,
       CURRENCY: {
         CURRATE: CURRATE,
@@ -160,7 +151,7 @@ export function exportTransactionsToQBOInner(
         CURSYM: fiatCurrencyCode
       }
     }
-    const use = NAME === '' ? qboTx : qboTxNamed
+    const use = name === '' ? qboTx : qboTxNamed
     STMTTRN.push(use)
   }
 
@@ -234,19 +225,10 @@ export function exportTransactionsToCSVInner(
   const items: any[] = []
 
   for (const edgeTx of edgeTransactions) {
-    const amount: string = denom ? div(edgeTx.nativeAmount, denom, DECIMAL_PRECISION) : edgeTx.nativeAmount
-    const networkFeeField: string = denom ? div(edgeTx.networkFee, denom, DECIMAL_PRECISION) : edgeTx.networkFee
+    const amount: string = denom != null ? div(edgeTx.nativeAmount, denom, DECIMAL_PRECISION) : edgeTx.nativeAmount
+    const networkFeeField: string = denom != null ? div(edgeTx.networkFee, denom, DECIMAL_PRECISION) : edgeTx.networkFee
     const { date, time } = makeCsvDateTime(edgeTx.date)
-    let name: string = ''
-    let amountFiat: number = 0
-    let category: string = ''
-    let notes: string = ''
-    if (edgeTx.metadata) {
-      name = edgeTx.metadata.name ? edgeTx.metadata.name : ''
-      amountFiat = edgeTx.metadata.amountFiat ? edgeTx.metadata.amountFiat : 0
-      category = edgeTx.metadata.category ? edgeTx.metadata.category : ''
-      notes = edgeTx.metadata.notes ? edgeTx.metadata.notes : ''
-    }
+    const { name = '', amountFiat = 0, category = '', notes = '' } = edgeTx.metadata ?? {}
 
     items.push({
       CURRENCY_CODE: currencyCode,

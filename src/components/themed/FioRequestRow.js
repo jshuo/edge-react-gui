@@ -86,7 +86,7 @@ class FioRequestRowComponent extends React.PureComponent<Props> {
     const styles = getStyles(theme)
 
     const fiatValue = `${fiatSymbol} ${fiatAmount}`
-    const currencyValue = `${displayDenomination.symbol || ''} ${fioRequest.content.amount}`
+    const currencyValue = `${displayDenomination.symbol ?? ''} ${fioRequest.content.amount}`
     const dateValue = `${formatTime(new Date(fioRequest.time_stamp))} ${fioRequest.content.memo ? `- ${fioRequest.content.memo}` : ''}`
     return (
       <SwipeableRow

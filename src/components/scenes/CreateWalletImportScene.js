@@ -87,7 +87,7 @@ export class CreateWalletImportComponent extends React.Component<Props, State> {
     const { walletType } = selectedWalletType
 
     const specialCurrencyInfo = getSpecialCurrencyInfo(walletType)
-    if (!specialCurrencyInfo.isImportKeySupported) throw new Error()
+    if (specialCurrencyInfo.isImportKeySupported == null || specialCurrencyInfo.isImportKeySupported === false) throw new Error()
     const instructionSyntax = specialCurrencyInfo.isImportKeySupported.privateKeyInstructions
     const labelKeySyntax = specialCurrencyInfo.isImportKeySupported.privateKeyLabel
     return (

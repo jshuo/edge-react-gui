@@ -28,7 +28,22 @@ exports[`EdgeLoginSceneComponent should render with loading props 1`] = `
           "justifyContent": "space-around",
         }
       }
-    />
+    >
+      <FastImage
+        resizeMode="contain"
+        source={
+          Object {
+            "uri": "",
+          }
+        }
+        style={
+          Object {
+            "height": 80,
+            "width": 80,
+          }
+        }
+      />
+    </View>
     <View
       style={
         Object {

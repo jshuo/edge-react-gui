@@ -20,7 +20,7 @@ class BackButtonComponent extends React.PureComponent<Props & ThemeProps> {
   }
 
   renderIcon = () => {
-    const { isEmpty, theme } = this.props
+    const { isEmpty = false, theme } = this.props
     const styles = getStyles(theme)
     if (isEmpty) return null
     return isIos ? (

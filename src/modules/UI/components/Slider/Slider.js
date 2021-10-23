@@ -53,7 +53,7 @@ export const SliderComponent = (props: Props) => {
   const upperBound = width - theme.confirmationSliderThumbWidth
   const widthStyle = { width }
   const sliderDisabled = disabled || showSpinner
-  const sliderText = !sliderDisabled ? s.strings.send_confirmation_slide_to_confirm : disabledText || s.strings.select_exchange_amount_short
+  const sliderText = !sliderDisabled ? s.strings.send_confirmation_slide_to_confirm : disabledText ?? s.strings.select_exchange_amount_short
 
   const translateX = useSharedValue(upperBound)
   const isSliding = useSharedValue(false)

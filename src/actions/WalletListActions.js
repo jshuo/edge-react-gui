@@ -68,7 +68,7 @@ const getFirstCurrencyAddress = async (currencyCode, getState) => {
     const walletCurrency = edgeWallet.currencyInfo.currencyCode.toUpperCase()
     return walletCurrency === currencyCode
   })
-  if (walletId) {
+  if (walletId != null) {
     const wallet = edgeWallets[walletId]
     return (await wallet.getReceiveAddress()).publicAddress
   }

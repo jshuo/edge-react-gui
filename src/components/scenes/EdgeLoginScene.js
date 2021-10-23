@@ -34,10 +34,10 @@ type Props = StateProps & DispatchProps & OwnProps
 export class EdgeLoginSceneComponent extends React.Component<Props> {
   renderBody() {
     let message = this.props.error
-    if (!this.props.error) {
+    if (this.props.error == null) {
       message = s.strings.edge_description
     }
-    if (!this.props.lobby && !this.props.error) {
+    if (!this.props.lobby && this.props.error == null) {
       throw new Error('Not normal expected behavior')
     }
     if (this.props.lobby && this.props.lobby.loginRequest && this.props.lobby.loginRequest.appId === '') {
@@ -61,7 +61,7 @@ export class EdgeLoginSceneComponent extends React.Component<Props> {
         </View>
       )
     }
-    if (this.props.error) {
+    if (this.props.error != null) {
       return (
         <View style={styles.buttonContainer}>
           <View style={styles.buttons}>
@@ -87,7 +87,7 @@ export class EdgeLoginSceneComponent extends React.Component<Props> {
   }
 
   renderImage() {
-    if (this.props.lobby && this.props.lobby.loginRequest && this.props.lobby.loginRequest.displayImageUrl) {
+    if (this.props.lobby && this.props.lobby.loginRequest && this.props.lobby.loginRequest.displayImageUrl != null) {
       return <FastImage style={styles.image} resizeMode="contain" source={{ uri: this.props.lobby.loginRequest.displayImageUrl }} />
     }
     return null
@@ -115,7 +115,7 @@ export class EdgeLoginSceneComponent extends React.Component<Props> {
   }
 
   render() {
-    if (!this.props.lobby && !this.props.error) {
+    if (!this.props.lobby && this.props.error == null) {
       return (
         <SceneWrapper background="body">
           <View style={styles.spinnerContainer}>

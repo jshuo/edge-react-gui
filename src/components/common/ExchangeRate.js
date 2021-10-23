@@ -50,12 +50,12 @@ class ExchangeRateComponent extends React.Component<Props & ThemeProps> {
     const secondaryCurrencyCode: string = secondaryInfo.displayDenomination.name
 
     const exchangeData = {
-      primaryDisplayAmount: primaryDisplayAmount || '1',
+      primaryDisplayAmount: primaryDisplayAmount ?? '1',
       primaryDisplayName,
       secondaryDisplayAmount: formattedSecondaryDisplayAmount,
       secondaryCurrencyCode
     }
-    const formattedPrimaryAmount = formatNumber(primaryDisplayAmount || '1')
+    const formattedPrimaryAmount = formatNumber(primaryDisplayAmount ?? '1')
 
     const { primaryDisplayAmount: primaryAmount, secondaryDisplayAmount: secondaryAmount } = exchangeData
     if (primaryAmount == null || primaryDisplayName == null || secondaryAmount == null || secondaryCurrencyCode == null) {

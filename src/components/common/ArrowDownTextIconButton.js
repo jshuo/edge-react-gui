@@ -21,7 +21,7 @@ class ArrowDownTextIconButtonComponent extends React.PureComponent<Props & Theme
     return (
       <TouchableOpacity onPress={onPress} style={styles.container}>
         {typeof title === 'string' ? <EdgeText>{title}</EdgeText> : title}
-        <MaterialIcon name="keyboard-arrow-down" color={iconColor || theme.icon} size={iconSize || theme.rem(1.5)} />
+        <MaterialIcon name="keyboard-arrow-down" color={iconColor ?? theme.icon} size={iconSize ?? theme.rem(1.5)} />
       </TouchableOpacity>
     )
   }

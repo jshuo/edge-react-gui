@@ -295,8 +295,8 @@ export class EdgeProvider extends Bridgeable {
       if (uniqueIdentifier !== null) spendTargetObj.uniqueIdentifier = uniqueIdentifier
       edgeSpendTargets.push(spendTargetObj)
       console.log(
-        `requestSpend currencycode ${currencyCode} and spendTarget.publicAddress ${spendTarget.publicAddress || ''} and uniqueIdentifier ${
-          uniqueIdentifier || ''
+        `requestSpend currencycode ${currencyCode} and spendTarget.publicAddress ${spendTarget.publicAddress ?? ''} and uniqueIdentifier ${
+          uniqueIdentifier ?? ''
         }`
       )
     }
@@ -319,7 +319,7 @@ export class EdgeProvider extends Bridgeable {
     const info: GuiMakeSpendInfo = {
       currencyCode,
       nativeAmount: result.nativeAmount,
-      publicAddress: result.legacyAddress || result.publicAddress,
+      publicAddress: result.legacyAddress ?? result.publicAddress,
       customNetworkFee,
       metadata,
       lockInputs,

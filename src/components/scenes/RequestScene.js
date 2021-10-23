@@ -289,7 +289,7 @@ export class RequestComponent extends React.Component<Props, State> {
 
     const requestAddress = this.props.useLegacyAddress ? this.state.legacyAddress : this.state.publicAddress
     const flipInputHeaderText = sprintf(s.strings.send_to_wallet, getWalletName(edgeWallet))
-    const { keysOnlyMode = false } = getSpecialCurrencyInfo(edgeWallet.currencyInfo.pluginId)
+    const { keysOnlyMode } = getSpecialCurrencyInfo(edgeWallet.currencyInfo.pluginId)
 
     // Balance
     const nativeBalance = getAvailableBalance(edgeWallet, primaryCurrencyInfo.displayCurrencyCode)

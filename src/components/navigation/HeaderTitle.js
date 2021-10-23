@@ -31,7 +31,7 @@ type Props = OwnProps & StateProps & DispatchProps & ThemeProps
 class HeaderTitleComponent extends React.PureComponent<Props> {
   handlePress = () => {
     Airship.show(bridge => <WalletListModal bridge={bridge} headerTitle={s.strings.select_wallet} />).then(({ walletId, currencyCode }: WalletListResult) => {
-      if (walletId && currencyCode) {
+      if (walletId != null && currencyCode != null) {
         this.props.onSelectWallet(walletId, currencyCode)
       }
     })
@@ -39,7 +39,7 @@ class HeaderTitleComponent extends React.PureComponent<Props> {
 
   renderWalletName = () => {
     const styles = getStyles(this.props.theme)
-    if (this.props.selectedWalletName) {
+    if (this.props.selectedWalletName != null) {
       return (
         <EdgeText>
           {this.props.selectedWalletName + ': '}
@@ -52,13 +52,14 @@ class HeaderTitleComponent extends React.PureComponent<Props> {
   }
 
   renderWalletNameSection = () => {
-    return this.props.showWalletNameOnly ? this.renderWalletName() : <ArrowDownTextIconButton onPress={this.handlePress} title={this.renderWalletName()} />
+    const { showWalletNameOnly } = this.props
+    return showWalletNameOnly === true ? this.renderWalletName() : <ArrowDownTextIconButton onPress={this.handlePress} title={this.renderWalletName()} />
   }
 
   render() {
     const { title, theme } = this.props
     const styles = getStyles(theme)
-    return <View style={styles.container}>{title ? <EdgeText>{title}</EdgeText> : this.renderWalletNameSection()}</View>
+    return <View style={styles.container}>{title != null ? <EdgeText>{title}</EdgeText> : this.renderWalletNameSection()}</View>
   }
 }
 

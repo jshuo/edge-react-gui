@@ -246,8 +246,8 @@ export const parseScannedUri = (data: string, customErrorTitle?: string, customE
     setTimeout(
       () =>
         Alert.alert(
-          customErrorTitle || s.strings.scan_invalid_address_error_title,
-          customErrorDescription || s.strings.scan_invalid_address_error_description,
+          customErrorTitle ?? s.strings.scan_invalid_address_error_title,
+          customErrorDescription ?? s.strings.scan_invalid_address_error_description,
           [
             {
               text: s.strings.string_ok,
@@ -319,7 +319,7 @@ export const checkAndShowGetCryptoModal = (selectedWalletId?: string, selectedCu
     shownWalletGetCryptoModals.push(wallet.id) // add to list of wallets with modal shown this session
     let threeButtonModal
     const { displayBuyCrypto } = getSpecialCurrencyInfo(wallet.currencyInfo.pluginId)
-    if (displayBuyCrypto) {
+    if (displayBuyCrypto === true) {
       const messageSyntax = sprintf(s.strings.buy_crypto_modal_message, currencyCode, currencyCode, currencyCode)
       threeButtonModal = await Airship.show(bridge => (
         <ButtonsModal

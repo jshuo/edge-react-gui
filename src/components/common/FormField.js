@@ -22,7 +22,7 @@ export class FormField extends React.Component<Props> {
   inputRef: { current: TextField | null } = React.createRef()
 
   componentDidMount() {
-    if (this.props.autoFocus && this.inputRef.current != null) {
+    if (this.props.autoFocus === true && this.inputRef.current != null) {
       this.inputRef.current.focus()
     }
   }

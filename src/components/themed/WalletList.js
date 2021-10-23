@@ -37,7 +37,7 @@ type Section = {
 
 const getSortOptionsCurrencyCode = (fullCurrencyCode: string): string => {
   const splittedCurrencyCode = fullCurrencyCode.split('-')
-  return splittedCurrencyCode[1] || splittedCurrencyCode[0]
+  return splittedCurrencyCode[1] ?? splittedCurrencyCode[0]
 }
 
 type Props = {

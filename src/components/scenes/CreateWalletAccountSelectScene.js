@@ -115,7 +115,7 @@ export class CreateWalletAccountSelect extends React.Component<Props, State> {
     }
     Airship.show(bridge => <WalletListModal bridge={bridge} headerTitle={s.strings.select_wallet} allowedCurrencyCodes={allowedCurrencyCodes} />).then(
       ({ walletId, currencyCode }: WalletListResult) => {
-        if (walletId && currencyCode) {
+        if (walletId != null && currencyCode != null) {
           this.onSelectWallet(walletId, currencyCode)
         }
       }
@@ -395,13 +395,13 @@ export const CreateWalletAccountSelectScene = connect<StateProps, DispatchProps,
     const walletAccountActivationPaymentInfo = state.ui.scenes.createWallet.walletAccountActivationPaymentInfo
     const { supportedCurrencies, activationCost } = handleActivationInfo
     const { currencyCode, amount } = walletAccountActivationPaymentInfo
-    const existingCoreWallet = existingWalletId ? currencyWallets[existingWalletId] : undefined
+    const existingCoreWallet = existingWalletId != null ? currencyWallets[existingWalletId] : undefined
     const paymentDenomination =
       currencyCode != null && existingCoreWallet != null ? getExchangeDenomination(state, existingCoreWallet.currencyInfo.pluginId, currencyCode) : {}
 
     let paymentDenominationSymbol
     if (paymentDenomination) {
-      paymentDenominationSymbol = paymentDenomination.symbol ? paymentDenomination.symbol : ''
+      paymentDenominationSymbol = paymentDenomination.symbol ?? ''
     } else {
       paymentDenominationSymbol = ''
     }

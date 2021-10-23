@@ -79,7 +79,7 @@ export const calculateFiatBalance = (wallet: EdgeCurrencyWallet, exchangeDenomin
   const cryptoAmount = convertNativeToExchange(nativeToExchangeRatio)(nativeBalance)
   const { isoFiatCurrencyCode } = getWalletFiat(wallet)
   const fiatValue = convertCurrencyFromExchangeRates(exchangeRates, currencyCode, isoFiatCurrencyCode, cryptoAmount)
-  return formatNumber(fiatValue, { toFixed: FIAT_PRECISION }) || '0'
+  return formatNumber(fiatValue, { toFixed: FIAT_PRECISION }) ?? '0'
 }
 
 export const findWalletByFioAddress = async (state: RootState, fioAddress: string): Promise<EdgeCurrencyWallet | null> => {

@@ -53,7 +53,7 @@ export function ConfirmContinueModal(props: Props) {
       <Fade visible={isAgreed}>
         <MainButton alignSelf="center" label={s.strings.confirm_finish} marginRem={0.5} type="secondary" onPress={handleAgreed} />
       </Fade>
-      {isSkippable && <ModalCloseArrow onPress={handleClose} />}
+      {isSkippable === true && <ModalCloseArrow onPress={handleClose} />}
     </ThemedModal>
   )
 }

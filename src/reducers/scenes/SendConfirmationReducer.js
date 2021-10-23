@@ -67,12 +67,12 @@ const sendConfirmationLegacy = (state: SendConfirmationState = initialState, act
       const firstSpendTarget = spendInfo.spendTargets[0]
       const guiMakeSpendInfo = {
         ...state.guiMakeSpendInfo,
-        networkFeeOption: spendInfo.networkFeeOption || state.guiMakeSpendInfo.networkFeeOption,
-        customNetworkFee: spendInfo.customNetworkFee || state.guiMakeSpendInfo.customNetworkFee,
-        spendTargets: spendInfo.spendTargets || state.guiMakeSpendInfo.spendTargets,
-        publicAddress: firstSpendTarget.publicAddress || state.guiMakeSpendInfo.publicAddress,
-        nativeAmount: firstSpendTarget.nativeAmount || state.guiMakeSpendInfo.nativeAmount,
-        uniqueIdentifier: (firstSpendTarget.otherParams && firstSpendTarget.otherParams.uniqueIdentifier) || state.guiMakeSpendInfo.uniqueIdentifier,
+        networkFeeOption: spendInfo.networkFeeOption ?? state.guiMakeSpendInfo.networkFeeOption,
+        customNetworkFee: spendInfo.customNetworkFee ?? state.guiMakeSpendInfo.customNetworkFee,
+        spendTargets: spendInfo.spendTargets ?? state.guiMakeSpendInfo.spendTargets,
+        publicAddress: firstSpendTarget.publicAddress ?? state.guiMakeSpendInfo.publicAddress,
+        nativeAmount: firstSpendTarget.nativeAmount ?? state.guiMakeSpendInfo.nativeAmount,
+        uniqueIdentifier: (firstSpendTarget.otherParams && firstSpendTarget.otherParams.uniqueIdentifier) ?? state.guiMakeSpendInfo.uniqueIdentifier,
         metadata: { ...state.guiMakeSpendInfo.metadata, ...spendInfo.metadata }
       }
 
@@ -97,7 +97,7 @@ const nativeAmount: Reducer<string, Action> = (state = '', action): string => {
     }
 
     case 'UI/SEND_CONFIRMATION/UPDATE_TRANSACTION': {
-      return action.data.guiMakeSpendInfo.nativeAmount || state || ''
+      return action.data.guiMakeSpendInfo.nativeAmount ?? state ?? ''
     }
 
     default:
@@ -130,7 +130,7 @@ const address = (state: string = '', action: Action): string => {
 const authRequired = (state: 'none' | 'pin' = 'none', action: Action): 'none' | 'pin' => {
   switch (action.type) {
     case 'UI/SEND_CONFIRMATION/NEW_SPEND_INFO': {
-      return action.data.authRequired || 'none'
+      return action.data.authRequired ?? 'none'
     }
 
     default:
@@ -141,13 +141,13 @@ const authRequired = (state: 'none' | 'pin' = 'none', action: Action): 'none' | 
 const transactionMetadata = (state: EdgeMetadata | null = null, action: Action): EdgeMetadata | null => {
   switch (action.type) {
     case 'UI/SEND_CONFIRMATION/UPDATE_TRANSACTION': {
-      if (!action.data.guiMakeSpendInfo || !action.data.guiMakeSpendInfo.metadata || !action.data.guiMakeSpendInfo.metadata.name) return state
+      if (action.data?.guiMakeSpendInfo?.metadata?.name == null) return state
 
-      return action.data.guiMakeSpendInfo.metadata || null
+      return action.data.guiMakeSpendInfo.metadata ?? null
     }
 
     case 'UI/SEND_CONFIRMATION/NEW_SPEND_INFO': {
-      return action.data.spendInfo.metadata || null
+      return action.data.spendInfo.metadata ?? null
     }
 
     default:

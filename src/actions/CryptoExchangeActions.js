@@ -131,7 +131,7 @@ export const exchangeMax = () => async (dispatch: Dispatch, getState: GetState) 
   }
   const { currencyWallets } = state.core.account
   const wallet: EdgeCurrencyWallet = currencyWallets[fromWalletId]
-  const currencyCode = state.cryptoExchange.fromCurrencyCode ? state.cryptoExchange.fromCurrencyCode : undefined
+  const currencyCode = state.cryptoExchange.fromCurrencyCode ?? undefined
   if (getSpecialCurrencyInfo(wallet.currencyInfo.pluginId).noMaxSpend) {
     const message = sprintf(s.strings.max_spend_unavailable_modal_message, wallet.currencyInfo.displayName)
     Alert.alert(s.strings.max_spend_unavailable_modal_title, message)
@@ -142,7 +142,7 @@ export const exchangeMax = () => async (dispatch: Dispatch, getState: GetState) 
   let primaryNativeAmount = '0'
 
   try {
-    const publicAddress = dummyPublicAddress || (await wallet.getReceiveAddress()).publicAddress
+    const publicAddress = dummyPublicAddress ?? (await wallet.getReceiveAddress()).publicAddress
     const edgeSpendInfo: EdgeSpendInfo = {
       networkFeeOption: 'standard',
       currencyCode,

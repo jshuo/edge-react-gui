@@ -200,7 +200,7 @@ const Component = (props: Props) => {
                     <EdgeText>{s.strings.fragment_send_album}</EdgeText>
                   </TouchableOpacity>
                 ) : null}
-                {isTextInput ? (
+                {isTextInput === true ? (
                   <TouchableOpacity style={styles.iconButton} onPress={handleTextInput}>
                     <Ionicon style={styles.icon} name="pencil-outline" size={theme.rem(1.5)} />
                     <EdgeText>{s.strings.enter_as_in_enter_address_with_keyboard}</EdgeText>

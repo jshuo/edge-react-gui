@@ -24,7 +24,7 @@ export const paymentProtocolUriReceived = async (
   coreWallet: EdgeCurrencyWallet
 ): Promise<GuiMakeSpendInfo | void> => {
   try {
-    if (!paymentProtocolURL) throw new Error('no paymentProtocolUrl prop')
+    if (paymentProtocolURL == null) throw new Error('no paymentProtocolUrl prop')
 
     const paymentProtocolInfo = await coreWallet.getPaymentProtocolInfo(paymentProtocolURL)
     const { domain, memo, nativeAmount, spendTargets } = paymentProtocolInfo

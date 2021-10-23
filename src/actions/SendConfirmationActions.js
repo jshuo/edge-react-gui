@@ -65,12 +65,13 @@ export const sendConfirmationUpdateTx =
     const state = getState()
     const { currencyWallets } = state.core.account
 
-    const walletId = selectedWalletId || state.ui.wallets.selectedWalletId
+    const walletId = selectedWalletId ?? state.ui.wallets.selectedWalletId
     const edgeWallet = currencyWallets[walletId]
     const maxSpendSet = state.ui.scenes.sendConfirmation.maxSpendSet
     const guiMakeSpendInfoClone = { ...guiMakeSpendInfo }
     if (maxSpendSet && isFeeChanged) guiMakeSpendInfoClone.nativeAmount = '0'
-    const spendInfo = getSpendInfo(state, guiMakeSpendInfoClone, selectedCurrencyCode || state.ui.wallets.selectedCurrencyCode)
+    const currencyCode = selectedCurrencyCode ?? state.ui.wallets.selectedCurrencyCode
+    const spendInfo = getSpendInfo(state, guiMakeSpendInfoClone, currencyCode)
 
     if (isFeeChanged) {
       spendInfo.spendTargets = spendInfo.spendTargets.map(spendTarget => ({
@@ -88,7 +89,7 @@ export const sendConfirmationUpdateTx =
     if (amountRequired && guiMakeSpendInfo.nativeAmount === '') return
 
     if (maxSpendSet && isFeeChanged) {
-      return dispatch(updateMaxSpend(walletId, selectedCurrencyCode || state.ui.wallets.selectedCurrencyCode, guiMakeSpendInfoClone))
+      return dispatch(updateMaxSpend(walletId, currencyCode, guiMakeSpendInfoClone))
     }
     await edgeWallet
       .makeSpend(spendInfo)
@@ -150,7 +151,7 @@ export const updateMaxSpend =
     const state = getState()
     const { currencyWallets } = state.core.account
 
-    const walletId = selectedWalletId || state.ui.wallets.selectedWalletId
+    const walletId = selectedWalletId ?? state.ui.wallets.selectedWalletId
     const edgeWallet = currencyWallets[walletId]
     const spendInfo = getSpendInfo(state, guiMakeSpendInfo, selectedCurrencyCode)
 
@@ -161,7 +162,7 @@ export const updateMaxSpend =
         const spendInfo = getSpendInfo(state, { nativeAmount }, selectedCurrencyCode)
         const authRequired = getAuthRequired(state, spendInfo, walletId)
 
-        const currencyCode = selectedCurrencyCode || state.ui.wallets.selectedCurrencyCode
+        const currencyCode = selectedCurrencyCode ?? state.ui.wallets.selectedCurrencyCode
         const isoFiatCurrencyCode = state.core.account.currencyWallets[walletId].fiatCurrencyCode
         const exchangeDenomination = getExchangeDenomination(state, edgeWallet.currencyInfo.pluginId, currencyCode)
 
@@ -190,13 +191,13 @@ export const signBroadcastAndSave =
     const { account } = state.core
     const { currencyWallets } = account
 
-    const selectedWalletId = walletId || state.ui.wallets.selectedWalletId
+    const selectedWalletId = walletId ?? state.ui.wallets.selectedWalletId
     const wallet = currencyWallets[selectedWalletId]
     const edgeUnsignedTransaction: EdgeTransaction = getTransaction(state)
 
     const useWalletId = walletId ?? state.ui.wallets.selectedWalletId
     const edgeWallet = state.core.account.currencyWallets[useWalletId]
-    const currencyCode = selectedCurrencyCode || state.ui.wallets.selectedCurrencyCode
+    const currencyCode = selectedCurrencyCode ?? state.ui.wallets.selectedCurrencyCode
     const isoFiatCurrencyCode = edgeWallet.fiatCurrencyCode
     const exchangeDenomination = getExchangeDenomination(state, wallet.currencyInfo.pluginId, currencyCode)
 
@@ -239,8 +240,7 @@ export const signBroadcastAndSave =
     if (parseFloat(feeAmountInUSD) > FEE_ALERT_THRESHOLD) {
       const feeAmountInWalletFiat = convertCurrencyFromExchangeRates(state.exchangeRates, currencyCode, isoFiatCurrencyCode, cryptoFeeExchangeAmount)
       const fiatDenomination = getDenomFromIsoCode(edgeWallet.fiatCurrencyCode.replace('iso:', ''))
-      const fiatSymbol = fiatDenomination.symbol ? `${fiatDenomination.symbol} ` : ''
-      const feeString = `${fiatSymbol}${toFixed(feeAmountInWalletFiat.toString(), 2, 2)}`
+      const feeString = `${fiatDenomination.symbol ?? ''}${toFixed(feeAmountInWalletFiat.toString(), 2, 2)}`
       const feeAlertResponse = await displayFeeAlert(edgeWallet.currencyInfo.currencyCode, feeString)
       if (!feeAlertResponse) {
         dispatch({
@@ -291,7 +291,7 @@ export const signBroadcastAndSave =
       if (payeeFioAddress != null && fioSender != null) {
         let fioNotes = `${s.strings.fragment_transaction_list_sent_prefix}${s.strings.fragment_send_from_label.toLowerCase()} ${fioSender.fioAddress}`
         fioNotes += fioSender.memo ? `\n${s.strings.fio_sender_memo_label}: ${fioSender.memo}` : ''
-        edgeMetadata.notes = `${fioNotes}\n${edgeMetadata.notes || ''}`
+        edgeMetadata.notes = `${fioNotes}\n${edgeMetadata.notes ?? ''}`
       }
       await wallet.saveTxMetadata(edgeSignedTransaction.txid, edgeSignedTransaction.currencyCode, edgeMetadata)
 
@@ -352,7 +352,7 @@ export const signBroadcastAndSave =
       })
 
       playSendSound().catch(error => console.log(error)) // Fail quietly
-      if (!guiMakeSpendInfo.dismissAlert) {
+      if (guiMakeSpendInfo.dismissAlert !== true) {
         Alert.alert(s.strings.transaction_success, s.strings.transaction_success_message, [
           {
             onPress() {},

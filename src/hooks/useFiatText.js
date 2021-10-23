@@ -24,14 +24,14 @@ type Props = {
 
 export const useFiatText = (props: Props) => {
   const {
-    cryptoExchangeMultiplier = defaultMultiplier,
-    appendFiatCurrencyCode,
-    nativeCryptoAmount = cryptoExchangeMultiplier,
-    fiatSymbolSpace,
-    parenthesisEnclosed,
     cryptoCurrencyCode,
+    cryptoExchangeMultiplier = defaultMultiplier,
+    nativeCryptoAmount = cryptoExchangeMultiplier,
+    appendFiatCurrencyCode = false,
+    fiatSymbolSpace = false,
+    parenthesisEnclosed = false,
     isoFiatCurrencyCode = USD_FIAT,
-    autoPrecision,
+    autoPrecision = false,
     minPrecision = 0,
     maxPrecision = 2,
     noGrouping = false

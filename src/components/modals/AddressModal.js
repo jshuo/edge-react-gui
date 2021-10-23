@@ -77,7 +77,7 @@ export class AddressModalComponent extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (this.props.useUserFioAddressesOnly && prevProps.userFioAddresses !== this.props.userFioAddresses) {
+    if (this.props.useUserFioAddressesOnly === true && prevProps.userFioAddresses !== this.props.userFioAddresses) {
       this.filterFioAddresses(this.state.uri)
     }
     if (!this.props.account) {
@@ -87,7 +87,7 @@ export class AddressModalComponent extends React.Component<Props, State> {
 
   getFioAddresses = async () => {
     const { useUserFioAddressesOnly, refreshAllFioAddresses, account } = this.props
-    if (useUserFioAddressesOnly) {
+    if (useUserFioAddressesOnly === true) {
       refreshAllFioAddresses()
     } else {
       this.setState({ fioAddresses: await getFioAddressCache(account) })
@@ -108,20 +108,18 @@ export class AddressModalComponent extends React.Component<Props, State> {
     const { fioAddresses } = this.state
     const fioAddressesArray = []
 
-    if (useUserFioAddressesOnly) {
+    if (useUserFioAddressesOnly === true) {
       for (const address of userFioAddresses) {
         const addressLowerCase = address.name.toLowerCase()
         if (uri !== '' && !addressLowerCase.includes(uri.toLowerCase())) continue // Autocomplete/Filter Check
         fioAddressesArray.push(address.name)
       }
-    }
-
-    if (!useUserFioAddressesOnly) {
+    } else {
       for (const address of Object.keys(fioAddresses.addresses)) {
         if (!fioAddresses.addresses[address]) continue // Ignore when address is not active (boolean false)
         const addressLowerCase = address.toLowerCase()
         if (uri !== '' && !addressLowerCase.includes(uri.toLowerCase())) continue // Autocomplete/Filter check
-        if (isFioOnly && (this.checkIfDomain(address) || !address.includes('@'))) continue // if isFioOnly is true. Ignore address if not a valid FIO address
+        if (isFioOnly === true && (this.checkIfDomain(address) || !address.includes('@'))) continue // if isFioOnly is true. Ignore address if not a valid FIO address
         fioAddressesArray.push(address)
       }
     }
@@ -230,12 +228,11 @@ export class AddressModalComponent extends React.Component<Props, State> {
   }
 
   checkIfFioAddress = async (uri: string) => {
-    const { useUserFioAddressesOnly, checkAddressConnected } = this.props
     this.setState({ fieldError: undefined })
 
     if (await this.isFioAddressValid(uri)) {
-      if (useUserFioAddressesOnly) return
-      if (checkAddressConnected) {
+      if (this.props.useUserFioAddressesOnly !== true) return
+      if (this.props.checkAddressConnected === true) {
         return this.checkFioPubAddressQueue(uri)
       }
       this.checkFioAddressExistQueue(uri)
@@ -283,7 +280,7 @@ export class AddressModalComponent extends React.Component<Props, State> {
 
   handleSubmit = () => {
     const { uri, cryptoAddress, fieldError } = this.state
-    const submitData = cryptoAddress || uri
+    const submitData = cryptoAddress ?? uri
     if (fieldError != null) return
     this.props.bridge.resolve(submitData)
   }
@@ -299,7 +296,7 @@ export class AddressModalComponent extends React.Component<Props, State> {
     return (
       <ThemedModal bridge={this.props.bridge} onCancel={this.handleClose} paddingRem={1}>
         <ModalTitle center paddingRem={[0, 2, 1]}>
-          {title || s.strings.address_modal_default_header}
+          {title ?? s.strings.address_modal_default_header}
         </ModalTitle>
         <View style={styles.container}>
           <OutlinedTextInput

@@ -61,7 +61,7 @@ export class CreateWalletReviewComponent extends React.Component<Props, State> {
     navigation.navigate('walletListScene')
 
     // note that we will be using cleanedPrivateKey as a flag for an imported private key
-    if (createdWallet && cleanedPrivateKey) {
+    if (createdWallet && cleanedPrivateKey != null) {
       this.setState({
         isAnimationVisible: true
       })

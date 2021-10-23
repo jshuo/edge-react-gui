@@ -115,10 +115,10 @@ export async function launchBitPay(
       ))
       const { walletId, currencyCode } = walletListResult
       selectedCurrencyCode = currencyCode
-      if (!walletId || !currencyCode || !params.currencyWallets) {
+      if (walletId != null || currencyCode != null || params.currencyWallets != null) {
         // No wallet selected
         return
-      } else {
+      } else if (walletId != null && params.currencyWallets != null) {
         selectedWallet = params.currencyWallets[walletId]
       }
     }

@@ -205,7 +205,7 @@ export function getDenomFromIsoCode(currencyCode: string): GuiDenomination {
 
 export const getSupportedFiats = (defaultCurrencyCode?: string): Array<{ label: string, value: string }> => {
   const out = []
-  if (defaultCurrencyCode && FIAT_CODES_SYMBOLS[defaultCurrencyCode]) {
+  if (defaultCurrencyCode != null && FIAT_CODES_SYMBOLS[defaultCurrencyCode] != null) {
     out.push({
       label: `${defaultCurrencyCode} - ${FIAT_CODES_SYMBOLS[defaultCurrencyCode]}`,
       value: defaultCurrencyCode
@@ -597,9 +597,9 @@ export const convertTransactionFeeToDisplayFee = (
   } else if (transaction?.networkFee != null) feeNativeAmount = transaction?.networkFee
 
   if (feeNativeAmount != null && gt(feeNativeAmount, '0')) {
-    const cryptoFeeSymbol = feeDisplayDenomination && feeDisplayDenomination.symbol ? feeDisplayDenomination.symbol : ''
-    const displayMultiplier = feeDisplayDenomination ? feeDisplayDenomination.multiplier : ''
-    const exchangeMultiplier = feeDefaultDenomination ? feeDefaultDenomination.multiplier : ''
+    const cryptoFeeSymbol = feeDisplayDenomination != null && feeDisplayDenomination.symbol != null ? feeDisplayDenomination.symbol : ''
+    const displayMultiplier = feeDisplayDenomination != null ? feeDisplayDenomination.multiplier : ''
+    const exchangeMultiplier = feeDefaultDenomination != null ? feeDefaultDenomination.multiplier : ''
     const cryptoFeeExchangeDenomAmount = feeNativeAmount ? convertNativeToDisplay(exchangeMultiplier)(feeNativeAmount) : ''
     const exchangeToDisplayMultiplierRatio = div(exchangeMultiplier, displayMultiplier, DECIMAL_PRECISION)
     const cryptoAmount = mul(cryptoFeeExchangeDenomAmount, exchangeToDisplayMultiplierRatio)
@@ -657,6 +657,6 @@ export function unixToLocaleDateTime(unixDate: number): { date: string, time: st
 
 export function logPrefix(wallet: EdgeCurrencyWallet): string {
   const prettyDate = new Date().toISOString().replace(/.*(\d\d-\d\d)T(\d\d:\d\d:\d\d).*/, '$1 $2')
-  const name = wallet.name ? wallet.name : 'NULL'
+  const name = wallet.name ?? 'NULL'
   return `${prettyDate} ${wallet.currencyInfo.currencyCode}-${wallet.id.slice(0, 2)}-${name}`
 }

@@ -75,7 +75,7 @@ export const checkFioObtData = (walletId: string, transactions: EdgeTransaction[
       const edgeMetadata: EdgeMetadata = transaction.metadata != null ? transaction.metadata : { notes: '' }
       try {
         const { name } = edgeMetadata
-        if (name && (await fioPlugin.otherMethods.isFioAddressValid(name))) {
+        if (name != null && (await fioPlugin.otherMethods.isFioAddressValid(name))) {
           addToFioAddressCache(state.core.account, [name])
         }
       } catch (e) {

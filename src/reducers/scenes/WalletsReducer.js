@@ -263,7 +263,7 @@ const manageTokensPending = (state = false, action: Action): boolean => {
 function schema(wallet: EdgeCurrencyWallet): GuiWallet {
   const id: string = wallet.id
   const type: string = wallet.type
-  const name: string = wallet.name || 'no wallet name'
+  const name: string = wallet.name ?? 'no wallet name'
 
   const { currencyCode, metaTokens, denominations } = wallet.currencyInfo
   const fiatCurrencyCode: string = wallet.fiatCurrencyCode.replace('iso:', '')

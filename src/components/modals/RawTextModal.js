@@ -19,7 +19,7 @@ type Props = {|
 |}
 
 export function RawTextModal(props: Props) {
-  const { bridge, body, title, disableCopy = false } = props
+  const { bridge, body, title, disableCopy } = props
 
   const handleCancel = () => bridge.resolve(undefined)
   const handleCopy = () => {
@@ -34,7 +34,7 @@ export function RawTextModal(props: Props) {
       <ScrollView>
         <ModalMessage>{body}</ModalMessage>
       </ScrollView>
-      {disableCopy ? null : (
+      {disableCopy === true ? null : (
         <MainButton alignSelf="center" label={s.strings.fragment_request_copy_title} marginRem={0.5} onPress={handleCopy} type="secondary" />
       )}
       <ModalCloseArrow onPress={handleCancel} />

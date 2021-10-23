@@ -52,7 +52,7 @@ export function TransactionDropdown(props: Props) {
       bridge={bridge}
       onPress={() => {
         bridge.resolve()
-        walletId && selectWallet(walletId, tx.currencyCode)
+        walletId != null && selectWallet(walletId, tx.currencyCode)
         Actions.push(TRANSACTION_DETAILS, {
           edgeTransaction: tx
         })
@@ -66,7 +66,7 @@ const ConnectedTransactionDropdown = connect<StateProps, DispatchProps, OwnProps
   (state, ownProps) => {
     const { tx, walletId } = ownProps
 
-    if (!state.ui.settings.loginStatus) {
+    if (state.ui.settings.loginStatus == null) {
       return { message: '' }
     }
 
@@ -79,7 +79,7 @@ const ConnectedTransactionDropdown = connect<StateProps, DispatchProps, OwnProps
       const { symbol, name, multiplier } = displayDenomination
       const displayAmount = convertNativeToDisplay(multiplier)(nativeAmount)
       return {
-        message: sprintf(s.strings.bitcoin_received, `${symbol ? symbol + ' ' : ''}${displayAmount} ${name}`)
+        message: sprintf(s.strings.bitcoin_received, `${symbol != null ? symbol + ' ' : ''}${displayAmount} ${name}`)
       }
     } else {
       return {

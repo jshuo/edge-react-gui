@@ -60,7 +60,7 @@ export class CreateWalletSelectCryptoComponent extends React.Component<Props, St
     const { isImportKeySupported } = getSpecialCurrencyInfo(walletType)
 
     // Go to the next screen:
-    if (isImportKeySupported) {
+    if (isImportKeySupported === true) {
       navigation.navigate('createWalletChoice', {
         selectedWalletType: createWalletType
       })

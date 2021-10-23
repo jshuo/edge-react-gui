@@ -21,41 +21,43 @@ import { updateExchangeRates } from './ExchangeRateActions.js'
 import { refreshConnectedWallets } from './FioActions.js'
 import { registerNotifications } from './NotificationActions.js'
 
-export const selectWallet = (walletId: string, currencyCode: string, alwaysActivate?: boolean) => (dispatch: Dispatch, getState: GetState) => {
-  const state = getState()
-  const { currencyWallets } = state.core.account
+export const selectWallet =
+  (walletId: string, currencyCode: string, alwaysActivate: boolean = false) =>
+  (dispatch: Dispatch, getState: GetState) => {
+    const state = getState()
+    const { currencyWallets } = state.core.account
 
-  // Manually un-pause the wallet, if necessary:
-  const wallet: EdgeCurrencyWallet = currencyWallets[walletId]
-  if (wallet.paused) wallet.changePaused(false).catch(showError)
+    // Manually un-pause the wallet, if necessary:
+    const wallet: EdgeCurrencyWallet = currencyWallets[walletId]
+    if (wallet.paused) wallet.changePaused(false).catch(showError)
 
-  dispatch(updateMostRecentWalletsSelected(walletId, currencyCode))
-  const { isAccountActivationRequired } = getSpecialCurrencyInfo(wallet.currencyInfo.pluginId)
-  if (isAccountActivationRequired) {
-    // EOS needs different path in case not activated yet
+    dispatch(updateMostRecentWalletsSelected(walletId, currencyCode))
+    const { isAccountActivationRequired } = getSpecialCurrencyInfo(wallet.currencyInfo.pluginId)
+    if (isAccountActivationRequired === true) {
+      // EOS needs different path in case not activated yet
+      const currentWalletId = state.ui.wallets.selectedWalletId
+      const currentWalletCurrencyCode = state.ui.wallets.selectedCurrencyCode
+      if (alwaysActivate || walletId !== currentWalletId || currencyCode !== currentWalletCurrencyCode) {
+        dispatch(selectEOSWallet(walletId, currencyCode))
+      }
+      return
+    }
     const currentWalletId = state.ui.wallets.selectedWalletId
     const currentWalletCurrencyCode = state.ui.wallets.selectedCurrencyCode
-    if (alwaysActivate || walletId !== currentWalletId || currencyCode !== currentWalletCurrencyCode) {
-      dispatch(selectEOSWallet(walletId, currencyCode))
-    }
-    return
-  }
-  const currentWalletId = state.ui.wallets.selectedWalletId
-  const currentWalletCurrencyCode = state.ui.wallets.selectedCurrencyCode
-  if (walletId !== currentWalletId || currencyCode !== currentWalletCurrencyCode) {
-    dispatch({
-      type: 'UI/WALLETS/SELECT_WALLET',
-      data: { walletId, currencyCode }
-    })
-    const wallet: EdgeCurrencyWallet = currencyWallets[walletId]
-    wallet
-      .getReceiveAddress({ currencyCode })
-      .then(receiveAddress => {
-        dispatch({ type: 'NEW_RECEIVE_ADDRESS', data: { receiveAddress } })
+    if (walletId !== currentWalletId || currencyCode !== currentWalletCurrencyCode) {
+      dispatch({
+        type: 'UI/WALLETS/SELECT_WALLET',
+        data: { walletId, currencyCode }
       })
-      .catch(showError)
+      const wallet: EdgeCurrencyWallet = currencyWallets[walletId]
+      wallet
+        .getReceiveAddress({ currencyCode })
+        .then(receiveAddress => {
+          dispatch({ type: 'NEW_RECEIVE_ADDRESS', data: { receiveAddress } })
+        })
+        .catch(showError)
+    }
   }
-}
 
 // check if the EOS wallet is activated (via public address blank string check) and route to activation scene(s)
 const selectEOSWallet = (walletId: string, currencyCode: string) => async (dispatch: Dispatch, getState: GetState) => {
@@ -88,8 +90,8 @@ const selectEOSWallet = (walletId: string, currencyCode: string) => async (dispa
     const currencyInfo = currencyInfos.find(info => info.currencyCode === currencyCode)
     if (!currencyInfo) throw new Error('CannotFindCurrencyInfo')
     const selectedWalletType = makeCreateWalletType(currencyInfo)
-    const specialCurrencyInfo = getSpecialCurrencyInfo(pluginId)
-    if (specialCurrencyInfo.skipAccountNameValidation) {
+    const { skipAccountNameValidation } = getSpecialCurrencyInfo(pluginId)
+    if (skipAccountNameValidation === true) {
       Actions.push(CREATE_WALLET_ACCOUNT_SELECT, {
         selectedFiat: selectedFiat,
         selectedWalletType,
@@ -510,7 +512,7 @@ export const checkEnabledTokensArray = (walletId: string, newEnabledTokens: stri
 
   oldEnabledTokens.forEach(oldToken => {
     const checkedToken = newEnabledTokens.find(newToken => newToken === oldToken)
-    if (!checkedToken) {
+    if (checkedToken != null) {
       dispatch(removeMostRecentWallet(walletId, oldToken))
     }
   })

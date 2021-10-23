@@ -389,7 +389,7 @@ export const TransactionListTop = connect<StateProps, DispatchProps, OwnProps>(
       for (const cCodeKey in STAKING_BALANCES) {
         const stakingCurrencyCode = `${selectedCurrencyCode}${STAKING_BALANCES[cCodeKey]}`
 
-        const stakingNativeAmount = guiWallet.nativeBalances[stakingCurrencyCode] || '0'
+        const stakingNativeAmount = guiWallet.nativeBalances[stakingCurrencyCode] ?? '0'
         const stakingCryptoAmount: string = convertNativeToDenomination(currencyDenomination.multiplier)(stakingNativeAmount)
         const stakingCryptoAmountFormat = formatNumber(add(stakingCryptoAmount, '0'))
 

@@ -243,7 +243,7 @@ export class SelectFioAddressComponent extends React.PureComponent<Props, LocalS
       <Tile
         type="touchable"
         title={s.strings.select_fio_address_address_memo}
-        body={memo || s.strings.fio_sender_memo_placeholder}
+        body={memo ?? s.strings.fio_sender_memo_placeholder}
         onPress={this.openMessageInput}
       />
     )

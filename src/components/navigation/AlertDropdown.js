@@ -20,7 +20,7 @@ type Props = {
 }
 
 export function AlertDropdown(props: Props) {
-  const { bridge, message, warning } = props
+  const { bridge, message, warning = false } = props
 
   return (
     <AirshipDropdown bridge={bridge} backgroundColor={warning ? THEME.COLORS.ACCENT_ORANGE : THEME.COLORS.ACCENT_RED}>

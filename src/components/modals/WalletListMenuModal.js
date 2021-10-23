@@ -194,7 +194,7 @@ export function WalletListMenuModal(props: Props) {
 
   return (
     <ThemedModal bridge={bridge} onCancel={handleCancel}>
-      {walletName ? <ModalTitle>{walletName}</ModalTitle> : null}
+      {walletName != null ? <ModalTitle>{walletName}</ModalTitle> : null}
       <View style={styles.headerRow}>
         {edgeWallet != null ? (
           <CurrencyIcon sizeRem={1} marginRem={[0, 0, 0, 0.5]} paddingRem={0.5} walletId={walletId} tokenId={contractAddress} resizeMode="cover" />

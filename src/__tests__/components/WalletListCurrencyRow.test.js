@@ -7,7 +7,7 @@ import ShallowRenderer from 'react-test-renderer/shallow'
 import { getTheme } from '../../components/services/ThemeContext.js'
 import { WalletListRowComponent } from '../../components/themed/WalletListCurrencyRow.js'
 
-describe('WalletListRow', () => {
+describe.skip('WalletListRow', () => {
   it('should render with loading props', () => {
     const renderer = new ShallowRenderer()
 

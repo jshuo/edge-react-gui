@@ -9,7 +9,6 @@ import { showFullScreenSpinner } from '../../components/modals/AirshipFullScreen
 import { showError } from '../../components/services/AirshipInstance.js'
 import { getSpecialCurrencyInfo } from '../../constants/WalletAndCurrencyConstants.js'
 import s from '../../locales/strings.js'
-import { setEnabledTokens } from '../../modules/Core/Wallets/EnabledTokens.js'
 import { memo, useCallback, useMemo } from '../../types/reactHooks.js'
 import { useDispatch } from '../../types/reactRedux.js'
 import type { Dispatch, GetState } from '../../types/reduxTypes.js'
@@ -39,7 +38,7 @@ export const createAndSelectToken =
       await approveTokenTerms(disklet, parentCurrencyCode)
       // Try to find existing Parent Edge Wallet
       const { currencyWallets } = account
-      let walletId = Object.keys(currencyWallets).find(walletId => currencyWallets[walletId].currencyInfo.currencyCode === currencyCode)
+      const walletId = Object.keys(currencyWallets).find(walletId => currencyWallets[walletId].currencyInfo.currencyCode === currencyCode)
       let wallet = walletId != null ? currencyWallets[walletId] : null
       // If no parent chain wallet exists, create it
       if (wallet == null) {
@@ -47,25 +46,8 @@ export const createAndSelectToken =
         if (walletType == null) throw new Error(s.strings.create_wallet_failed_message)
         wallet = await createWallet(account, { walletType, fiatCurrencyCode: defaultIsoFiat })
       }
-      // Reassign walletId just in case we created a new wallet
-      walletId = wallet.id
-
-      const addToken = async () => {
-        if (wallet == null) throw new Error(s.strings.create_wallet_failed_message)
-        const enabledTokens = (await wallet.getEnabledTokens()) ?? []
-        const tokens = enabledTokens.filter(tokenId => tokenId !== wallet?.currencyInfo?.pluginId)
-        await setEnabledTokens(wallet, [...tokens, currencyCode], [])
-        return [...enabledTokens, currencyCode]
-      }
-
-      const enabledTokens = await showFullScreenSpinner(s.strings.wallet_list_modal_enabling_token, addToken())
-
-      dispatch({
-        type: 'UPDATE_WALLET_ENABLED_TOKENS',
-        data: { walletId, tokens: enabledTokens }
-      })
-
-      return walletId
+      await showFullScreenSpinner(s.strings.wallet_list_modal_enabling_token, wallet.enableTokens([currencyCode]))
+      return wallet.id
     } catch (error) {
       showError(error)
     }

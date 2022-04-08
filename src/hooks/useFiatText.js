@@ -17,6 +17,8 @@ type Props = {
   isoFiatCurrencyCode?: string,
   parenthesisEnclosed?: boolean,
   autoPrecision?: boolean,
+  minPrecision?: number,
+  maxPrecision?: number,
   noGrouping?: boolean
 }
 
@@ -30,6 +32,8 @@ export const useFiatText = (props: Props) => {
     cryptoCurrencyCode,
     isoFiatCurrencyCode = USD_FIAT,
     autoPrecision,
+    minPrecision = 0,
+    maxPrecision = 2,
     noGrouping = false
   } = props
 
@@ -44,13 +48,13 @@ export const useFiatText = (props: Props) => {
     const cryptoAmount = div(nativeCryptoAmount, cryptoExchangeMultiplier, DECIMAL_PRECISION)
     return convertCurrency(state, cryptoCode, fiatCode, cryptoAmount)
   })
-  const formatedFiatString = formatFiatString({
+  const formattedFiatString = formatFiatString({
     fiatAmount,
     autoPrecision,
     noGrouping
   })
   // Remove trailing zeros for 'fiatString'
-  const fiatString = toFixed(formatedFiatString, 0, 2)
+  const fiatString = toFixed(formattedFiatString, minPrecision, maxPrecision)
   // Create FiatText' prefix
   const fiatSymbol = getFiatSymbol(fiatCode)
   const fiatSymbolFmt = fiatSymbolSpace ? `${fiatSymbol} ` : fiatSymbol

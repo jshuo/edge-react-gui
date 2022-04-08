@@ -56,9 +56,9 @@ type GetCryptoAmountParams = {
 }
 
 export const getCryptoAmount = ({ balance, exchangeRate, exchangeDenomination, fiatDenomination, denomination, currencyCode }: GetCryptoAmountParams) => {
-  if (zeroString(balance)) return '0'
-  let maxConversionDecimals = DEFAULT_TRUNCATE_PRECISION
   const { multiplier, symbol } = denomination
+  if (zeroString(balance)) return `${symbol ? symbol + ' ' : ''}0`
+  let maxConversionDecimals = DEFAULT_TRUNCATE_PRECISION
 
   if (exchangeRate) {
     const precisionAdjustValue = precisionAdjust({
@@ -130,6 +130,7 @@ export const WalletListCurrencyRowComponent = (props: Props) => {
   const isoFiatCurrencyCode = fixFiatCurrencyCode(fiatCurrencyCode)
   const rateKey = `${currencyCode}_${isoFiatCurrencyCode}`
   const exchangeRate = !zeroString(exchangeRates[rateKey]) ? exchangeRates[rateKey] : '1'
+  const exchangeRateDecimals = Math.log10(parseFloat(exchangeRate)) >= 3 ? 0 : 2
   const cryptoExchangeMultiplier = exchangeDenomination.multiplier
 
   const nativeCryptoAmount = getCryptoAmount({ balance, exchangeRate, exchangeDenomination, fiatDenomination, denomination, currencyCode })
@@ -145,6 +146,8 @@ export const WalletListCurrencyRowComponent = (props: Props) => {
     nativeCryptoAmount: cryptoExchangeMultiplier,
     cryptoCurrencyCode: currencyCode,
     isoFiatCurrencyCode,
+    autoPrecision: true,
+    maxPrecision: exchangeRateDecimals,
     cryptoExchangeMultiplier
   })
   let exchangeRateType = 'neutral'

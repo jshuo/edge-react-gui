@@ -4,17 +4,17 @@ import { type EdgeAccount } from 'edge-core-js'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { type AirshipBridge } from 'react-native-airship'
-import FastImage from 'react-native-fast-image'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import { sprintf } from 'sprintf-js'
 
 import { type WalletListMenuKey, walletListMenuAction } from '../../actions/WalletListMenuActions.js'
-import { getPluginId, getSpecialCurrencyInfo, WALLET_LIST_MENU } from '../../constants/WalletAndCurrencyConstants.js'
+import { getSpecialCurrencyInfo, WALLET_LIST_MENU } from '../../constants/WalletAndCurrencyConstants.js'
 import s from '../../locales/strings.js'
 import { useEffect, useState } from '../../types/reactHooks.js'
 import { useDispatch, useSelector } from '../../types/reactRedux.js'
-import { getCurrencyIcon, getCurrencyInfos } from '../../util/CurrencyInfoHelpers.js'
+import { getCurrencyInfos } from '../../util/CurrencyInfoHelpers.js'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
+import { CurrencyIcon } from '../themed/CurrencyIcon.js'
 import { ModalCloseArrow, ModalTitle } from '../themed/ModalParts.js'
 import { ThemedModal } from '../themed/ThemedModal.js'
 
@@ -101,27 +101,20 @@ export function WalletListMenuModal(props: Props) {
 
   const dispatch = useDispatch()
   const account = useSelector(state => state.core.account)
-  const guiWallet = useSelector(state => state.ui.wallets.byId[walletId])
+  const edgeWallet = account.currencyWallets[walletId]
 
   const theme = useTheme()
   const styles = getStyles(theme)
 
   // Look up the image and name:
-  let image: string | void
-  let walletName: string | void
-  if (guiWallet != null) {
-    walletName = guiWallet.name
-
-    const { metaTokens } = guiWallet
-    const contractAddress = metaTokens.find(token => token.currencyCode === currencyCode)?.contractAddress
-    image = getCurrencyIcon(getPluginId(guiWallet.type), contractAddress).symbolImage
-  }
+  const walletName = edgeWallet?.name ?? ''
+  const { contractAddress } = edgeWallet?.currencyInfo.metaTokens.find(token => token.currencyCode === currencyCode) ?? {}
 
   const handleCancel = () => props.bridge.resolve(null)
 
   const optionAction = (option: WalletListMenuKey) => {
-    if (currencyCode == null && guiWallet != null) {
-      dispatch(walletListMenuAction(walletId, option, guiWallet.currencyCode))
+    if (currencyCode == null && edgeWallet != null) {
+      dispatch(walletListMenuAction(walletId, option, edgeWallet.currencyInfo.currencyCode))
     } else {
       dispatch(walletListMenuAction(walletId, option, currencyCode))
     }
@@ -137,7 +130,9 @@ export function WalletListMenuModal(props: Props) {
     <ThemedModal bridge={bridge} onCancel={handleCancel}>
       {walletName ? <ModalTitle>{walletName}</ModalTitle> : null}
       <View style={styles.headerRow}>
-        {image ? <FastImage resizeMode="cover" source={{ uri: image }} style={styles.currencyImage} /> : null}
+        {edgeWallet != null ? (
+          <CurrencyIcon sizeRem={1} marginRem={[0, 0, 0, 0.5]} paddingRem={0.5} walletId={walletId} tokenId={contractAddress} resizeMode="cover" />
+        ) : null}
         {currencyCode ? <ModalTitle>{currencyCode}</ModalTitle> : null}
       </View>
       {options.map((option: Option) => (
@@ -159,12 +154,6 @@ const getStyles = cacheStyles((theme: Theme) => ({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  currencyImage: {
-    width: theme.rem(1),
-    height: theme.rem(1),
-    padding: theme.rem(0.5),
-    marginLeft: theme.rem(0.5)
   },
   optionRow: {
     alignItems: 'center',

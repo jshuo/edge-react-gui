@@ -23,10 +23,10 @@ import { convertNativeToDenomination, getFiatSymbol } from '../../util/utils'
 import { type WalletListResult, WalletListModal } from '../modals/WalletListModal.js'
 import { Airship } from '../services/AirshipInstance.js'
 import { type Theme, type ThemeProps, cacheStyles, withTheme } from '../services/ThemeContext.js'
+import { CurrencyIcon } from './CurrencyIcon.js'
 import { EdgeText } from './EdgeText.js'
 import { type OutlinedTextInputRef, OutlinedTextInput } from './OutlinedTextInput.js'
 import { SceneHeader } from './SceneHeader'
-import { WalletProgressIcon } from './WalletProgressIcon.js'
 
 type OwnProps = {
   walletId: string,
@@ -111,7 +111,7 @@ export class TransactionListTopComponent extends React.PureComponent<Props, Stat
                 <EdgeText style={styles.balanceBoxWalletName}>{walletName}</EdgeText>
                 <Ionicons name="chevron-forward" size={theme.rem(1.5)} color={theme.iconTappable} />
               </TouchableOpacity>
-              <WalletProgressIcon currencyCode={currencyCode} walletId={walletId} size={theme.rem(1.5)} />
+              <CurrencyIcon currencyCode={currencyCode} walletId={walletId} sizeRem={1.5} />
             </View>
             <TouchableOpacity onPress={this.props.toggleBalanceVisibility}>
               {isAccountBalanceVisible ? (

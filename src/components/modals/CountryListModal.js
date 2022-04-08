@@ -8,6 +8,7 @@ import { getCountry } from 'react-native-localize'
 import { COUNTRY_CODES, FLAG_LOGO_URL } from '../../constants/CountryConstants.js'
 import s from '../../locales/strings.js'
 import type { CountryData } from '../../types/types'
+import { toLowerCaseNoSpaces } from '../../util/utils'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { SelectableRow } from '../themed/SelectableRow'
 import { ListModal } from './ListModal'
@@ -22,7 +23,7 @@ export const CountryListModal = ({ countryCode = getCountry() ?? 'US', bridge }:
   const styles = getStyles(theme)
 
   const rowComponent = ({ filename, name, 'alpha-2': alpha }: CountryData) => {
-    const logoName = filename ?? name.toLowerCase().replace(' ', '-')
+    const logoName = filename ?? toLowerCaseNoSpaces(name, '-')
     const source = { uri: `${FLAG_LOGO_URL}/${logoName}.png` }
 
     return (

@@ -18,6 +18,8 @@ import { getWalletFiat } from '../util/CurrencyWalletHelpers.js'
 export const DECIMAL_PRECISION = 18
 export const DEFAULT_TRUNCATE_PRECISION = 6
 
+export const toLowerCaseNoSpaces = (str: string, delimiter: string = '') => str.replace(/\s/g, delimiter).toLowerCase()
+
 export function capitalize(string: string): string {
   if (!string) return ''
   const firstLetter = string.charAt(0).toUpperCase()
@@ -152,19 +154,11 @@ export const decimalOrZero = (input: string, decimalPlaces: number): string => {
   }
 }
 
-export function removeHexPrefix(s: string) {
-  const noHexPrefix = s.replace('0x', '')
-  return noHexPrefix
-}
+export const removeHexPrefix = (s: string) => s.replace('0x', '')
 
-export function isHex(h: string) {
-  const out = /^[0-9A-F]+$/i.test(h)
-  return out
-}
+export const isHex = (h: string) => /^[0-9A-F]+$/i.test(h)
 
-export function hexToDecimal(num: string) {
-  return add(num, '0', 10)
-}
+export const hexToDecimal = (num: string) => add(num, '0', 10)
 
 export const roundedFee = (nativeAmount: string, decimalPlacesBeyondLeadingZeros: number, multiplier: string): string => {
   if (nativeAmount === '') return nativeAmount
@@ -571,9 +565,9 @@ export function checkFilterWallet(details: FilterDetailsType, filterText: string
     return true
   }
 
-  const walletName = details.name.replace(/\s/g, '')
-  const currencyName = details.currencyName.replace(/\s/g, '')
-  const filterString = filterText.replace(/\s/g, '')
+  const walletName = toLowerCaseNoSpaces(details.name)
+  const currencyName = toLowerCaseNoSpaces(details.currencyName)
+  const filterString = toLowerCaseNoSpaces(filterText)
   return walletName.includes(filterString) || currencyCode.includes(filterString) || currencyName.includes(filterString)
 }
 

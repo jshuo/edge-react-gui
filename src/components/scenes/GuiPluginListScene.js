@@ -21,6 +21,7 @@ import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { type PluginTweak } from '../../types/TweakTypes.js'
 import { filterGuiPluginJson } from '../../util/GuiPluginTools.js'
 import { bestOfPlugins } from '../../util/ReferralHelpers.js'
+import { toLowerCaseNoSpaces } from '../../util/utils'
 import { SceneWrapper } from '../common/SceneWrapper.js'
 import { ButtonsModal } from '../modals/ButtonsModal.js'
 import { CountryListModal } from '../modals/CountryListModal.js'
@@ -267,7 +268,7 @@ class GuiPluginList extends React.PureComponent<Props, State> {
         <TouchableOpacity style={styles.selectedCountryRow} onPress={this._handleCountryPress}>
           {countryData && (
             <FastImage
-              source={{ uri: `${FLAG_LOGO_URL}/${countryData.filename || countryData.name.toLowerCase().replace(' ', '-')}.png` }}
+              source={{ uri: `${FLAG_LOGO_URL}/${countryData.filename ?? toLowerCaseNoSpaces(countryData.name, '-')}.png` }}
               style={styles.selectedCountryFlag}
             />
           )}

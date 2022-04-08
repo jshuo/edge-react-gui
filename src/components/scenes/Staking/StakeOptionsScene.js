@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react'
-import { Image, View } from 'react-native'
+import { View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { sprintf } from 'sprintf-js'
 
@@ -9,11 +9,11 @@ import { type StakePolicy } from '../../../plugins/stake-plugins'
 import { useEffect, useState } from '../../../types/reactHooks.js'
 import type { RouteProp } from '../../../types/routerTypes'
 import { type NavigationProp } from '../../../types/routerTypes.js'
-import { getCurrencyIcon } from '../../../util/CurrencyInfoHelpers'
 import { getRewardAssetsName, getStakeAssetsName, stakePlugin } from '../../../util/stakeUtils.js'
 import { FillLoader } from '../../common/FillLoader.js'
 import { SceneWrapper } from '../../common/SceneWrapper.js'
 import { cacheStyles, useTheme } from '../../services/ThemeContext.js'
+import { CurrencyIcon } from '../../themed/CurrencyIcon.js'
 import { EdgeText } from '../../themed/EdgeText.js'
 import { SceneHeader } from '../../themed/SceneHeader.js'
 import { StakingOptionCard } from '../../themed/StakingOptionCard.js'
@@ -28,8 +28,7 @@ export const StakeOptionsScene = (props: Props) => {
   const { navigation } = props
   const theme = useTheme()
   const styles = getStyles(theme)
-  const walletImageUri = getCurrencyIcon('fantom').symbolImage
-  const icon = <Image style={styles.icon} source={{ uri: walletImageUri }} />
+  const icon = <CurrencyIcon pluginId="fantom" resizeMode="contain" sizeRem={1.5} marginRem={[0, 0.5, 0, 0]} />
 
   //
   // Stake Policies
@@ -49,7 +48,7 @@ export const StakeOptionsScene = (props: Props) => {
         setStakePolicies(stakePolicies)
       })
       .catch(err => console.error(err))
-  }, [walletId])
+  }, [navigation, walletId])
 
   //
   // Handlers
@@ -111,12 +110,7 @@ const getStyles = cacheStyles(theme => ({
     margin: theme.rem(1),
     marginBottom: 0
   },
-  icon: {
-    height: theme.rem(1.5),
-    width: theme.rem(1.5),
-    marginRight: theme.rem(0.5),
-    resizeMode: 'contain'
-  },
+
   sceneHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

@@ -18,7 +18,6 @@ import { getExchangeRate } from '../../selectors/WalletSelectors.js'
 import { deviceHeight } from '../../theme/variables/platform.js'
 import { connect } from '../../types/reactRedux.js'
 import type { GuiCurrencyInfo } from '../../types/types.js'
-import { getCurrencyIcon } from '../../util/CurrencyInfoHelpers.js'
 import { getAvailableBalance, getWalletFiat, getWalletName } from '../../util/CurrencyWalletHelpers.js'
 import { convertTransactionFeeToDisplayFee, DECIMAL_PRECISION, DEFAULT_TRUNCATE_PRECISION, getDenomFromIsoCode, truncateDecimals } from '../../util/utils.js'
 import { ExchangeRate } from '../common/ExchangeRate.js'
@@ -47,7 +46,6 @@ type StateProps = {
 
   // FlipInput
   flipInputHeaderText: string,
-  flipInputHeaderLogo: string,
   primaryInfo: GuiCurrencyInfo,
   secondaryInfo: GuiCurrencyInfo,
   fiatPerCrypto: string,
@@ -182,13 +180,12 @@ export class FlipInputModalComponent extends React.PureComponent<Props, State> {
   }
 
   renderFlipInput = () => {
-    const { flipInputHeaderText, flipInputHeaderLogo, headerText, primaryInfo, secondaryInfo, fiatPerCrypto, pluginId } = this.props
+    const { flipInputHeaderText, headerText, primaryInfo, secondaryInfo, fiatPerCrypto, pluginId } = this.props
     const { overridePrimaryExchangeAmount } = this.state
     return (
       <Card marginRem={0}>
         <ExchangedFlipInput
           headerText={headerText ?? flipInputHeaderText}
-          headerLogo={flipInputHeaderLogo}
           primaryCurrencyInfo={{ ...primaryInfo }}
           secondaryCurrencyInfo={{ ...secondaryInfo }}
           exchangeSecondaryToPrimaryRatio={fiatPerCrypto}
@@ -323,9 +320,7 @@ export const FlipInputModal = connect<StateProps, DispatchProps, OwnProps>(
     const wallet = state.core.account.currencyWallets[walletId]
     const name = getWalletName(wallet)
     const { fiatCurrencyCode, isoFiatCurrencyCode } = getWalletFiat(wallet)
-    const { pluginId, metaTokens } = wallet.currencyInfo
-    const contractAddress = metaTokens.find(token => token.currencyCode === currencyCode)?.contractAddress
-    const { symbolImageDarkMono } = getCurrencyIcon(pluginId, contractAddress)
+    const { pluginId } = wallet.currencyInfo
 
     // Denominations
     const cryptoDenomination = getDisplayDenomination(state, pluginId, currencyCode)
@@ -376,7 +371,6 @@ export const FlipInputModal = connect<StateProps, DispatchProps, OwnProps>(
 
       // FlipInput
       flipInputHeaderText: sprintf(s.strings.send_from_wallet, name),
-      flipInputHeaderLogo: symbolImageDarkMono,
       primaryInfo,
       secondaryInfo,
       fiatPerCrypto: fiatPerCrypto ?? '0',

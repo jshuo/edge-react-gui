@@ -1,6 +1,5 @@
 // @flow
 
-import { type WalletListMenuKey } from '../actions/WalletListMenuActions.js'
 import s from '../locales/strings.js'
 
 export const MAX_TOKEN_CODE_CHARACTERS = 7
@@ -568,72 +567,6 @@ export const SPECIAL_CURRENCY_INFO: {
  * Customizes which coins get which options on the wallet list scene.
  */
 export const WALLET_LIST_OPTIONS_ICON = '\u2026'
-export const WALLET_LIST_MENU: Array<{
-  currencyCodes?: string[],
-  label: string,
-  value: WalletListMenuKey
-}> = [
-  {
-    label: s.strings.string_rename,
-    value: 'rename'
-  },
-  {
-    label: s.strings.string_resync,
-    value: 'resync'
-  },
-  {
-    label: s.strings.fragment_wallets_export_transactions,
-    value: 'exportWalletTransactions'
-  },
-  {
-    label: s.strings.string_master_private_key,
-    value: 'getSeed'
-  },
-  {
-    currencyCodes: Object.keys(SPECIAL_CURRENCY_INFO)
-      .filter(pluginId => SPECIAL_CURRENCY_INFO[pluginId]?.isCustomTokensSupported)
-      .map(pluginId => SPECIAL_CURRENCY_INFO[pluginId].chainCode),
-    label: s.strings.string_add_edit_tokens,
-    value: 'manageTokens'
-  },
-  {
-    currencyCodes: [
-      'BCH',
-      'BSV',
-      'BTC',
-      'BTG',
-      'DASH',
-      'DGB',
-      'DOGE',
-      'EBST',
-      'EOS',
-      'FIRO',
-      'FTC',
-      'GRS',
-      'LTC',
-      'QTUM',
-      'RVN',
-      'SMART',
-      'TESTBTC',
-      'TLOS',
-      'UFO',
-      'VTC',
-      'WAX',
-      'XMR',
-      'ZEC'
-    ],
-    label: s.strings.fragment_wallets_view_xpub,
-    value: 'viewXPub'
-  },
-  {
-    label: s.strings.string_get_raw_keys,
-    value: 'getRawKeys'
-  },
-  {
-    label: s.strings.string_archive_wallet,
-    value: 'delete'
-  }
-]
 
 export const USD_FIAT = 'iso:USD'
 export const getSymbolFromCurrency = (currencyCode: string) => {

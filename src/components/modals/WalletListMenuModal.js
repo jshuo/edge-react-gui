@@ -4,45 +4,129 @@ import { type EdgeAccount } from 'edge-core-js'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { type AirshipBridge } from 'react-native-airship'
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import AntDesignIcon, { type AntDesignGlyphs } from 'react-native-vector-icons/AntDesign'
 import { sprintf } from 'sprintf-js'
 
 import { type WalletListMenuKey, walletListMenuAction } from '../../actions/WalletListMenuActions.js'
-import { getSpecialCurrencyInfo, WALLET_LIST_MENU } from '../../constants/WalletAndCurrencyConstants.js'
+import { getPluginId, getSpecialCurrencyInfo, SPECIAL_CURRENCY_INFO } from '../../constants/WalletAndCurrencyConstants.js'
 import s from '../../locales/strings.js'
 import { useEffect, useState } from '../../types/reactHooks.js'
 import { useDispatch, useSelector } from '../../types/reactRedux.js'
-import { getCurrencyInfos } from '../../util/CurrencyInfoHelpers.js'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { CurrencyIcon } from '../themed/CurrencyIcon.js'
 import { ModalCloseArrow, ModalTitle } from '../themed/ModalParts.js'
 import { ThemedModal } from '../themed/ThemedModal.js'
 
-type Option = {
-  value: WalletListMenuKey,
-  label: string
-}
-
 type Props = {
   bridge: AirshipBridge<null>,
-
   // Wallet identity:
   currencyCode?: string,
   isToken?: boolean,
   walletId: string
 }
 
-const icons = {
-  delete: 'warning',
-  rawDelete: 'warning',
-  exportWalletTransactions: 'export',
-  getRawKeys: 'lock',
-  getSeed: 'key',
-  manageTokens: 'plus',
-  rename: 'edit',
-  resync: 'sync',
-  viewXPub: 'eye'
+type WalletListOptionMap = {
+  [name: WalletListMenuKey]: {
+    label: string,
+    icon: AntDesignGlyphs,
+    sortIndex: number,
+    currencyCodes?: string[],
+    customColor?: string
+  }
 }
+
+type MenuOption = {
+  name: WalletListMenuKey,
+  label: string,
+  icon: AntDesignGlyphs,
+  customColor?: string
+}
+
+export const WALLET_LIST_OPTIONS: WalletListOptionMap = {
+  rename: {
+    label: s.strings.string_rename,
+    icon: 'edit',
+    sortIndex: 1
+  },
+  resync: {
+    label: s.strings.string_resync,
+    icon: 'sync',
+    sortIndex: 2
+  },
+  exportWalletTransactions: {
+    label: s.strings.fragment_wallets_export_transactions,
+    icon: 'export',
+    sortIndex: 3
+  },
+  getSeed: {
+    label: s.strings.string_master_private_key,
+    icon: 'key',
+    sortIndex: 4
+  },
+  manageTokens: {
+    label: s.strings.string_add_edit_tokens,
+    icon: 'plus',
+    sortIndex: 5,
+    currencyCodes: Object.keys(SPECIAL_CURRENCY_INFO)
+      .filter(pluginId => SPECIAL_CURRENCY_INFO[pluginId]?.isCustomTokensSupported)
+      .map(pluginId => SPECIAL_CURRENCY_INFO[pluginId].chainCode)
+  },
+  viewXPub: {
+    label: s.strings.fragment_wallets_view_xpub,
+    icon: 'eye',
+    sortIndex: 6,
+    currencyCodes: [
+      'BCH',
+      'BSV',
+      'BTC',
+      'BTG',
+      'DASH',
+      'DGB',
+      'DOGE',
+      'EBST',
+      'EOS',
+      'FIRO',
+      'FTC',
+      'GRS',
+      'LTC',
+      'QTUM',
+      'RVN',
+      'SMART',
+      'TESTBTC',
+      'TLOS',
+      'UFO',
+      'VTC',
+      'WAX',
+      'XMR',
+      'ZEC'
+    ]
+  },
+  delete: {
+    label: s.strings.string_archive_wallet,
+    icon: 'warning',
+    sortIndex: 7,
+    customColor: 'warningText'
+  },
+  getRawKeys: {
+    label: s.strings.string_get_raw_keys,
+    icon: 'lock',
+    sortIndex: 8
+  },
+  rawDelete: {
+    label: s.strings.string_archive_wallet,
+    icon: 'warning',
+    sortIndex: 9
+  }
+}
+
+const toOptions = (walletOptions: string[], currencyCode?: string): MenuOption[] =>
+  walletOptions
+    .sort((optName1, optName2) => WALLET_LIST_OPTIONS[optName1].sortIndex - WALLET_LIST_OPTIONS[optName2].sortIndex)
+    .filter(optionName => {
+      const { currencyCodes } = WALLET_LIST_OPTIONS[optionName]
+      return currencyCode == null || currencyCodes == null || currencyCodes.includes(currencyCode)
+    })
+    .map(name => ({ name, ...WALLET_LIST_OPTIONS[name] }))
 
 const getWalletOptions = async (params: {
   walletId: string,
@@ -50,48 +134,31 @@ const getWalletOptions = async (params: {
   currencyCode?: string,
   isToken?: boolean,
   account: EdgeAccount
-}): Promise<Option[]> => {
+}): Promise<MenuOption[]> => {
   const { walletId, currencyCode, isToken, account } = params
 
-  if (!currencyCode) {
-    return [
-      { label: s.strings.string_get_raw_keys, value: 'getRawKeys' },
-      { label: s.strings.string_archive_wallet, value: 'rawDelete' }
-    ]
-  }
+  // If no currency code usually it's a broken wallet so allow exporting the keys and deleting the wallet
+  if (!currencyCode) return toOptions(['getRawKeys', 'rawDelete'])
 
-  if (isToken) {
-    return [
-      {
-        label: s.strings.string_resync,
-        value: 'resync'
-      },
-      {
-        label: s.strings.fragment_wallets_export_transactions,
-        value: 'exportWalletTransactions'
-      }
-    ]
-  }
+  // If it's a token wallet then limit the options
+  if (isToken) return toOptions(['resync', 'exportWalletTransactions'])
 
-  const result = []
-
+  // Get splitting options
   const splittable = await account.listSplittableWalletTypes(walletId)
-
-  const currencyInfos = getCurrencyInfos(account)
-  for (const splitWalletType of splittable) {
-    const info = currencyInfos.find(({ walletType }) => walletType === splitWalletType)
-    if (info == null || getSpecialCurrencyInfo(info.pluginId).isSplittingDisabled) continue
-    result.push({ label: sprintf(s.strings.string_split_wallet, info.displayName), value: `split${info.currencyCode}` })
+  const splitOptions: MenuOption[] = []
+  for (const walletType of splittable) {
+    const pluginId = getPluginId(walletType)
+    if (account.currencyConfig[pluginId] == null || getSpecialCurrencyInfo(pluginId)?.isSplittingDisabled === true) continue
+    const { displayName } = account.currencyConfig[pluginId].currencyInfo
+    const label = sprintf(s.strings.string_split_wallet, displayName)
+    splitOptions.push({ name: `split${displayName}`, label, icon: 'arrowsalt' })
   }
 
-  for (const option of WALLET_LIST_MENU) {
-    const { currencyCodes, label, value } = option
+  // Add all other options except for rawDelete
+  const { rawDelete, ...rest } = WALLET_LIST_OPTIONS
+  const options = toOptions(Object.keys(rest))
 
-    if (Array.isArray(currencyCodes) && !currencyCodes.includes(currencyCode)) continue
-
-    result.push({ label, value })
-  }
-  return result
+  return splitOptions.concat(options)
 }
 
 export function WalletListMenuModal(props: Props) {
@@ -106,9 +173,9 @@ export function WalletListMenuModal(props: Props) {
   const theme = useTheme()
   const styles = getStyles(theme)
 
-  // Look up the image and name:
+  // Look up the name and contractAddress:
   const walletName = edgeWallet?.name ?? ''
-  const { contractAddress } = edgeWallet?.currencyInfo.metaTokens.find(token => token.currencyCode === currencyCode) ?? {}
+  const { contractAddress } = edgeWallet != null ? edgeWallet.currencyInfo.metaTokens.find(token => token.currencyCode === currencyCode) ?? {} : {}
 
   const handleCancel = () => props.bridge.resolve(null)
 
@@ -123,8 +190,7 @@ export function WalletListMenuModal(props: Props) {
 
   useEffect(() => {
     getWalletOptions({ walletId, walletName, currencyCode, isToken, account }).then(options => setOptions(options))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [account, currencyCode, isToken, walletId, walletName])
 
   return (
     <ThemedModal bridge={bridge} onCancel={handleCancel}>
@@ -135,16 +201,16 @@ export function WalletListMenuModal(props: Props) {
         ) : null}
         {currencyCode ? <ModalTitle>{currencyCode}</ModalTitle> : null}
       </View>
-      {options.map((option: Option) => (
-        <TouchableOpacity key={option.value} onPress={() => optionAction(option.value)} style={styles.optionRow}>
-          <AntDesignIcon
-            name={icons[option.value] ?? 'arrowsalt'} // for split keys like splitBCH, splitETH, etc.
-            size={theme.rem(1)}
-            style={option.value === 'delete' ? [styles.optionIcon, styles.warningColor] : styles.optionIcon}
-          />
-          <Text style={option.value === 'delete' ? [styles.optionText, styles.warningColor] : styles.optionText}>{option.label}</Text>
-        </TouchableOpacity>
-      ))}
+      {options.map((option: MenuOption) => {
+        const { name, label, icon, customColor } = option
+        const customStyle = customColor != null ? { color: theme[customColor] } : {}
+        return (
+          <TouchableOpacity key={name} onPress={() => optionAction(name)} style={styles.optionRow}>
+            <AntDesignIcon name={icon} size={theme.rem(1)} style={[styles.optionIcon, customStyle]} />
+            <Text style={[styles.optionText, customStyle]}>{label}</Text>
+          </TouchableOpacity>
+        )
+      })}
       <ModalCloseArrow onPress={handleCancel} />
     </ThemedModal>
   )
@@ -168,8 +234,5 @@ const getStyles = cacheStyles((theme: Theme) => ({
     fontFamily: theme.fontFaceDefault,
     fontSize: theme.rem(1),
     padding: theme.rem(0.5)
-  },
-  warningColor: {
-    color: theme.warningText
   }
 }))

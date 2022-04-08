@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CurrencyIcon should render with loading props 1`] = `
+<View
+  style={
+    Object {
+      "height": 45,
+      "width": 45,
+    }
+  }
+>
+  <Svg
+    preserveAspectRatio="xMidYMid meet"
+    style={
+      Object {
+        "height": "100%",
+        "position": "absolute",
+        "transform": Array [
+          Object {
+            "rotateZ": "-90deg",
+          },
+        ],
+        "width": "100%",
+        "zIndex": 1,
+      }
+    }
+  >
+    <Circle
+      animatedProps={[MockFunction]}
+      cx={22.5}
+      cy={22.5}
+      r={22.5}
+      stroke="#66EDA8"
+      strokeDasharray={320.4424506661589}
+      strokeWidth={4}
+    />
+  </Svg>
+  <FastImage
+    resizeMode="contain"
+    source={
+      Object {
+        "uri": "https://content.edge.app/currencyIcons/bitcoin/bitcoin.png",
+      }
+    }
+    style={
+      Object {
+        "height": 45,
+        "width": 45,
+      }
+    }
+  />
+</View>
+`;

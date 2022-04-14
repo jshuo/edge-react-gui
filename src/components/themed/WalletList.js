@@ -7,7 +7,7 @@ import { selectWallet } from '../../actions/WalletActions.js'
 import s from '../../locales/strings'
 import { getExchangeDenominationFromState } from '../../selectors/DenominationSelectors.js'
 import { calculateFiatBalance } from '../../selectors/WalletSelectors.js'
-import { useEffect, useMemo, useState } from '../../types/reactHooks.js'
+import { useCallback, useEffect, useMemo, useState } from '../../types/reactHooks.js'
 import { useDispatch, useSelector } from '../../types/reactRedux.js'
 import type { CreateTokenType, CreateWalletType, FlatListItem, GuiWallet } from '../../types/types.js'
 import { asSafeDefaultGuiWallet } from '../../types/types.js'
@@ -257,37 +257,45 @@ export function WalletList(props: Props) {
     return sortedWalletlist
   }
 
-  function renderRow(data: FlatListItem<WalletListItem>) {
-    // Create Wallet/Token
-    if (data.item.id == null) {
-      const { createWalletType, createTokenType } = data.item
-      return <WalletListCreateRow {...{ ...createWalletType, ...createTokenType }} onPress={handlePress} />
-    }
-
-    const walletId = data.item.id.replace(/:.*/, '')
-    const guiWallet = wallets[walletId]
-
-    if (guiWallet == null || account.currencyWallets[walletId] == null) {
-      if (isModal) {
-        return <WalletListRow currencyCode="" walletName="" />
-      }
-      return <WalletListSwipeRow currencyCode="" isToken={false} walletId={walletId} />
-    } else {
-      const isToken = guiWallet.currencyCode !== data.item.fullCurrencyCode
-      const walletCodesArray = data.item.fullCurrencyCode != null ? data.item.fullCurrencyCode.split('-') : []
-      const currencyCode = isToken ? walletCodesArray[1] : walletCodesArray[0]
-
-      if (isModal) {
-        return <WalletListCurrencyRow currencyCode={currencyCode} onPress={handlePress} walletId={walletId} paddingRem={0} />
+  const renderRow = useCallback(
+    (data: FlatListItem<WalletListItem>) => {
+      // Create Wallet/Token
+      if (data.item.id == null) {
+        const { createWalletType, createTokenType } = data.item
+        return <WalletListCreateRow {...{ ...createWalletType, ...createTokenType }} onPress={handlePress} />
       }
 
-      return <WalletListSwipeRow currencyCode={currencyCode} isToken={isToken} openTutorial={data.index === 0 && showSlidingTutorial} walletId={walletId} />
-    }
-  }
+      const walletId = data.item.id.replace(/:.*/, '')
+      const guiWallet = wallets[walletId]
 
-  const renderRefreshControl = () => <RefreshControl refreshing={false} onRefresh={activateSearch} tintColor={theme.searchListRefreshControlIndicator} />
+      if (guiWallet == null || account.currencyWallets[walletId] == null) {
+        if (isModal) {
+          return <WalletListRow currencyCode="" walletName="" />
+        }
+        return <WalletListSwipeRow currencyCode="" isToken={false} walletId={walletId} />
+      } else {
+        const isToken = guiWallet.currencyCode !== data.item.fullCurrencyCode
+        const walletCodesArray = data.item.fullCurrencyCode != null ? data.item.fullCurrencyCode.split('-') : []
+        const currencyCode = isToken ? walletCodesArray[1] : walletCodesArray[0]
 
-  const renderSectionHeader = (section: { section: Section }) => <WalletListSectionHeader title={section.section.title} />
+        if (isModal) {
+          return <WalletListCurrencyRow currencyCode={currencyCode} onPress={handlePress} walletId={walletId} paddingRem={0} />
+        }
+
+        return <WalletListSwipeRow currencyCode={currencyCode} isToken={isToken} openTutorial={data.index === 0 && showSlidingTutorial} walletId={walletId} />
+      }
+    },
+    [account.currencyWallets, handlePress, isModal, showSlidingTutorial, wallets]
+  )
+
+  // const memoizedRow = useMemo(() => renderRow, [renderRow])
+
+  const renderRefreshControl = useMemo(
+    () => <RefreshControl refreshing={false} onRefresh={activateSearch} tintColor={theme.searchListRefreshControlIndicator} />,
+    [activateSearch, theme.searchListRefreshControlIndicator]
+  )
+
+  const renderSectionHeader = useCallback((section: { section: Section }) => <WalletListSectionHeader title={section.section.title} />, [])
 
   function getMostRecentlyUsedWallets(size: number, walletListItem: WalletListItem[]): WalletListItem[] {
     const recentWallets = []
@@ -341,6 +349,8 @@ export function WalletList(props: Props) {
     }
   }
 
+  const sections = getSection(walletList, walletOnlyList.length)
+
   if (isSectionList) {
     return (
       <SectionList
@@ -349,7 +359,7 @@ export function WalletList(props: Props) {
         ListHeaderComponent={header}
         renderItem={renderRow}
         renderSectionHeader={renderSectionHeader}
-        sections={getSection(walletList, walletOnlyList.length)}
+        sections={sections}
         getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
       />
     )
@@ -362,7 +372,7 @@ export function WalletList(props: Props) {
       keyboardShouldPersistTaps="handled"
       ListFooterComponent={footer}
       ListHeaderComponent={header}
-      refreshControl={isModal ? undefined : renderRefreshControl()}
+      refreshControl={isModal ? undefined : renderRefreshControl}
       renderItem={renderRow}
       getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
     />

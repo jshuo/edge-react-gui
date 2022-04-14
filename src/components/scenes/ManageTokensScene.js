@@ -216,6 +216,7 @@ class ManageTokensSceneComponent extends React.Component<Props, State> {
           />
         </SceneHeader>
         <FlatList
+          getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
           keyExtractor={item => item.currencyCode}
           data={this.getFilteredTokens()}
           renderItem={metaToken => (

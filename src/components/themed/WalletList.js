@@ -350,6 +350,7 @@ export function WalletList(props: Props) {
         renderItem={renderRow}
         renderSectionHeader={renderSectionHeader}
         sections={getSection(walletList, walletOnlyList.length)}
+        getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
       />
     )
   }
@@ -363,6 +364,7 @@ export function WalletList(props: Props) {
       ListHeaderComponent={header}
       refreshControl={isModal ? undefined : renderRefreshControl()}
       renderItem={renderRow}
+      getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
     />
   )
 }

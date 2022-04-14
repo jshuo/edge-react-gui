@@ -101,10 +101,10 @@ export class CreateWalletSelectCryptoComponent extends React.Component<Props, St
   }
 
   render() {
-    const { account } = this.props
+    const { account, theme } = this.props
     const { searchTerm } = this.state
     const lowerSearch = searchTerm.toLowerCase()
-    const styles = getStyles(this.props.theme)
+    const styles = getStyles(theme)
 
     // Sort and filter the available types:
     const sortedArray = getCreateWalletTypes(account)
@@ -138,6 +138,7 @@ export class CreateWalletSelectCryptoComponent extends React.Component<Props, St
               keyboardShouldPersistTaps="handled"
               keyExtractor={this.keyExtractor}
               renderItem={this.renderWalletTypeResult}
+              getItemLayout={(data, index) => ({ length: theme.rem(4.25), offset: theme.rem(4.25) * index, index })}
             />
           </View>
         )}

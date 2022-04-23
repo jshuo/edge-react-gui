@@ -100,6 +100,10 @@ function handleLink(dispatch: Dispatch, state: RootState, link: DeepLink): boole
       return true
     }
 
+    case 'requestAddress': {
+      return true
+    }
+
     case 'swap': {
       if (!hasCurrentWallet) return false
       Actions.push(EXCHANGE_SCENE)

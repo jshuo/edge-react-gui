@@ -137,6 +137,10 @@ function parseEdgeProtocol(url: URL): DeepLink {
       return parseReturnAddress(url, currencyNameMatch[1])
     }
 
+    case 'reqaddr': {
+      return parseRequestAddress(url)
+    }
+
     case 'https': {
       if (url.includes('bitpay')) return { type: 'other', uri: 'https:' + url.pathname, protocol: 'bitpay' }
     }
@@ -152,6 +156,33 @@ function parseDownloadLink(url: URL): PromotionLink {
   }
   const [, installerId = ''] = url.pathname.split('/')
   return { type: 'promotion', installerId }
+}
+
+/**
+ * Parse a request for payment address link (BitPay).
+ * TODO: Not fully spec'd yet.
+ */
+function parseRequestAddress(url: URL): DeepLink {
+  const query = parseQuery(url.query)
+  const codesString = query.codes ?? undefined
+  const redir = query.redir ?? undefined
+  const post = query.post ?? undefined
+  const payer = query.payer ?? undefined
+
+  if (codesString == null) throw new SyntaxError('No currency codes found in request for payment address')
+
+  // Split the asset codes by '-'
+  const codes = codesString.split('-')
+
+  // Split each asset code by '_'
+  const assets = codes.map(codePair => {
+    const splitCodes = codePair.split('_')
+    const nativeCode = splitCodes[0].toUpperCase()
+    const tokenCode = splitCodes.length > 1 ? splitCodes[1].toUpperCase() : nativeCode
+    return { nativeCode, tokenCode }
+  })
+
+  return { type: 'requestAddress', assets, redir, post, payer }
 }
 
 /**
@@ -178,5 +209,6 @@ const prefixes: Array<[string, string]> = [
 
   // Alternative schemes:
   ['https://deep.edge.app/', 'edge://'],
-  ['airbitz://', 'edge://']
+  ['airbitz://', 'edge://'],
+  ['reqaddr://', 'edge://reqaddr']
 ]

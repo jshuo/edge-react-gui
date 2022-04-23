@@ -6,7 +6,7 @@ import React from 'react'
 import s from '../../locales/strings.js'
 import { type GuiMakeSpendInfo } from '../../types/types.js'
 import { Airship } from '../services/AirshipInstance.js'
-import { ButtonsModal } from './ButtonsModal.js'
+import { ButtonsModal } from './common/ButtonsModal.js'
 
 const BITPAY = {
   domain: 'bitpay.com',

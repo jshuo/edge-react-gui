@@ -8,7 +8,7 @@ import { sprintf } from 'sprintf-js'
 import { Fontello } from '../../assets/vector'
 import s from '../../locales/strings.js'
 import { config } from '../../theme/appConfig'
-import { ButtonsModal } from '../modals/ButtonsModal.js'
+import { ButtonsModal } from '../modals/common/ButtonsModal.js'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { EdgeText } from '../themed/EdgeText.js'
 

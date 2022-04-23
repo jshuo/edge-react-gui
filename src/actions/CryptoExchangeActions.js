@@ -19,7 +19,7 @@ import { Alert } from 'react-native'
 import { sprintf } from 'sprintf-js'
 
 import { trackConversion } from '../actions/TrackingActions.js'
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import { EXCHANGE_QUOTE_PROCESSING_SCENE, EXCHANGE_QUOTE_SCENE, EXCHANGE_SCENE, EXCHANGE_SUCCESS_SCENE, PLUGIN_BUY } from '../constants/SceneKeys.js'
 import { getSpecialCurrencyInfo } from '../constants/WalletAndCurrencyConstants.js'

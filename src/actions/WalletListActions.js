@@ -5,7 +5,7 @@ import { Linking } from 'react-native'
 import { sprintf } from 'sprintf-js'
 
 import { showFullScreenSpinner } from '../components/modals/AirshipFullScreenSpinner.js'
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import type { SortOption } from '../components/modals/WalletListSortModal.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import s from '../locales/strings.js'

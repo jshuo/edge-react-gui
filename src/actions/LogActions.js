@@ -7,7 +7,7 @@ import { getBrand, getBuildNumber, getDeviceId, getVersion } from 'react-native-
 import { base16, base64 } from 'rfc4648'
 
 import packageJson from '../../package.json'
-import { TextInputModal } from '../components/modals/TextInputModal.js'
+import { TextInputModal } from '../components/modals/common/TextInputModal'
 import { Airship, showError, showToast } from '../components/services/AirshipInstance.js'
 import s from '../locales/strings.js'
 import { sendLogs } from '../modules/Logs/api.js'

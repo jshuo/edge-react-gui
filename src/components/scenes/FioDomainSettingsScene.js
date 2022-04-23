@@ -12,7 +12,7 @@ import { getDomainSetVisibilityFee, getRenewalFee, getTransferFee, renewFioDomai
 import { connect } from '../../types/reactRedux.js'
 import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { SceneWrapper } from '../common/SceneWrapper'
-import { ButtonsModal } from '../modals/ButtonsModal'
+import { ButtonsModal } from '../modals/common/ButtonsModal'
 import { Airship, showError } from '../services/AirshipInstance'
 import { type Theme, type ThemeProps, cacheStyles, withTheme } from '../services/ThemeContext'
 import { ClickableText } from '../themed/ClickableText.js'

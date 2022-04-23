@@ -4,14 +4,14 @@ import * as React from 'react'
 import { Platform, View } from 'react-native'
 import { type AirshipBridge } from 'react-native-airship'
 
-import s from '../../locales/strings.js'
-import { useState } from '../../types/reactHooks.js'
-import { showError } from '../services/AirshipInstance.js'
-import { Alert } from '../themed/Alert.js'
-import { MainButton } from '../themed/MainButton.js'
-import { ModalCloseArrow, ModalMessage, ModalTitle } from '../themed/ModalParts.js'
-import { OutlinedTextInput } from '../themed/OutlinedTextInput.js'
-import { ThemedModal } from '../themed/ThemedModal.js'
+import s from '../../../locales/strings.js'
+import { useState } from '../../../types/reactHooks.js'
+import { showError } from '../../services/AirshipInstance.js'
+import { Alert } from '../../themed/Alert.js'
+import { MainButton } from '../../themed/MainButton.js'
+import { ModalCloseArrow, ModalMessage, ModalTitle } from '../../themed/ModalParts.js'
+import { OutlinedTextInput } from '../../themed/OutlinedTextInput.js'
+import { ThemedModal } from '../../themed/ThemedModal.js'
 
 type Props = {|
   // Resolves to the entered string, or void if cancelled.

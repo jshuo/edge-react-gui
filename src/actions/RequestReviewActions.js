@@ -5,7 +5,7 @@ import { Linking, Platform } from 'react-native'
 import * as StoreReview from 'react-native-store-review'
 import { sprintf } from 'sprintf-js'
 
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { Airship } from '../components/services/AirshipInstance.js'
 import s from '../locales/strings.js'
 import { config } from '../theme/appConfig.js'

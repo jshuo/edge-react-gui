@@ -6,14 +6,14 @@ import { type AirshipBridge } from 'react-native-airship'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
-import s from '../../locales/strings.js'
-import { useState } from '../../types/reactHooks.js'
-import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
-import { EdgeText } from '../themed/EdgeText.js'
-import { Fade } from '../themed/Fade'
-import { MainButton } from '../themed/MainButton.js'
-import { ModalCloseArrow, ModalMessage, ModalTitle } from '../themed/ModalParts.js'
-import { ThemedModal } from '../themed/ThemedModal.js'
+import s from '../../../locales/strings.js'
+import { useState } from '../../../types/reactHooks.js'
+import { type Theme, cacheStyles, useTheme } from '../../services/ThemeContext.js'
+import { EdgeText } from '../../themed/EdgeText.js'
+import { Fade } from '../../themed/Fade'
+import { MainButton } from '../../themed/MainButton.js'
+import { ModalCloseArrow, ModalMessage, ModalTitle } from '../../themed/ModalParts.js'
+import { ThemedModal } from '../../themed/ThemedModal.js'
 
 type Props = {|
   bridge: AirshipBridge<boolean>,

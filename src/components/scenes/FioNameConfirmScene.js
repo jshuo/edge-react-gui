@@ -10,7 +10,7 @@ import { FioActionSubmit } from '../../modules/FioAddress/components/FioActionSu
 import { connect } from '../../types/reactRedux.js'
 import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { SceneWrapper } from '../common/SceneWrapper'
-import { ButtonsModal } from '../modals/ButtonsModal'
+import { ButtonsModal } from '../modals/common/ButtonsModal'
 import { Airship, showError } from '../services/AirshipInstance'
 import { cacheStyles } from '../services/ThemeContext.js'
 import { SceneHeader } from '../themed/SceneHeader'

@@ -11,7 +11,7 @@ import { Bridgeable, update } from 'yaob'
 
 import { trackAccountEvent, trackConversion } from '../../../../actions/TrackingActions.js'
 import { selectWallet } from '../../../../actions/WalletActions'
-import { ButtonsModal } from '../../../../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../../../../components/modals/common/ButtonsModal.js'
 import { type WalletListResult, WalletListModal } from '../../../../components/modals/WalletListModal.js'
 import { Airship, showError, showToast } from '../../../../components/services/AirshipInstance.js'
 import { SEND } from '../../../../constants/SceneKeys.js'

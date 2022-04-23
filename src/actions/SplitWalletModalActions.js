@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import s from '../locales/strings.js'
 import type { Dispatch, GetState } from '../types/reduxTypes.js'

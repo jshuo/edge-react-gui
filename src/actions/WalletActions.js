@@ -4,7 +4,7 @@ import { type EdgeCurrencyWallet } from 'edge-core-js'
 import * as React from 'react'
 import { sprintf } from 'sprintf-js'
 
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import { CREATE_WALLET_ACCOUNT_SELECT, CREATE_WALLET_ACCOUNT_SETUP } from '../constants/SceneKeys.js'
 import { getSpecialCurrencyInfo } from '../constants/WalletAndCurrencyConstants.js'

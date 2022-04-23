@@ -5,7 +5,7 @@ import * as React from 'react'
 import { Alert } from 'react-native'
 import { sprintf } from 'sprintf-js'
 
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { type AccountPaymentParams } from '../components/scenes/CreateWalletAccountSelectScene.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import { SEND, WALLET_LIST_SCENE } from '../constants/SceneKeys.js'

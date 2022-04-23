@@ -4,10 +4,10 @@ import * as React from 'react'
 import { View } from 'react-native'
 import { type AirshipBridge } from 'react-native-airship'
 
-import { showError } from '../services/AirshipInstance.js'
-import { MainButton } from '../themed/MainButton.js'
-import { ModalCloseArrow, ModalMessage, ModalTitle } from '../themed/ModalParts.js'
-import { ThemedModal } from '../themed/ThemedModal.js'
+import { showError } from '../../services/AirshipInstance.js'
+import { MainButton } from '../../themed/MainButton.js'
+import { ModalCloseArrow, ModalMessage, ModalTitle } from '../../themed/ModalParts.js'
+import { ThemedModal } from '../../themed/ThemedModal.js'
 
 export type ButtonInfo = {
   label: string,

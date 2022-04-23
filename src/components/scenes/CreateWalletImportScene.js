@@ -16,7 +16,7 @@ import { connect } from '../../types/reactRedux.js'
 import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { scale } from '../../util/scaling.js'
 import { FormField } from '../common/FormField.js'
-import { ButtonsModal } from '../modals/ButtonsModal.js'
+import { ButtonsModal } from '../modals/common/ButtonsModal.js'
 import { Airship } from '../services/AirshipInstance.js'
 
 type OwnProps = {

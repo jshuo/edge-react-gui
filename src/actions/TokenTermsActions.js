@@ -3,7 +3,7 @@ import type { Disklet } from 'disklet'
 import * as React from 'react'
 import { sprintf } from 'sprintf-js'
 
-import { ConfirmContinueModal } from '../components/modals/ConfirmContinueModal.js'
+import { ConfirmContinueModal } from '../components/modals/common/ConfirmContinueModal.js'
 import { Airship } from '../components/services/AirshipInstance.js'
 import { TOKEN_TERMS_AGREEMENT } from '../constants/constantSettings.js'
 import s from '../locales/strings.js'

@@ -3,7 +3,7 @@
 import { OtpError } from 'edge-core-js'
 import * as React from 'react'
 
-import { TextInputModal } from '../components/modals/TextInputModal.js'
+import { TextInputModal } from '../components/modals/common/TextInputModal.js'
 import { Airship, showError } from '../components/services/AirshipInstance.js'
 import { OTP_REPAIR_SCENE } from '../constants/SceneKeys.js'
 import s from '../locales/strings.js'

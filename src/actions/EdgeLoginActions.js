@@ -4,7 +4,7 @@ import { type EdgeLobby } from 'edge-core-js/types'
 import * as React from 'react'
 import { Alert } from 'react-native'
 
-import { ButtonsModal } from '../components/modals/ButtonsModal.js'
+import { ButtonsModal } from '../components/modals/common/ButtonsModal.js'
 import { Airship } from '../components/services/AirshipInstance.js'
 import s from '../locales/strings.js'
 import { type Dispatch, type GetState } from '../types/reduxTypes.js'

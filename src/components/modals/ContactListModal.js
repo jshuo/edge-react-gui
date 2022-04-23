@@ -11,7 +11,7 @@ import { type GuiContact } from '../../types/types.js'
 import { normalizeForSearch } from '../../util/utils.js'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { SelectableRow } from '../themed/SelectableRow'
-import { ListModal } from './ListModal.js'
+import { ListModal } from './common/ListModal.js'
 
 type Props = {
   bridge: AirshipBridge<{ contactName: string, thumbnailPath?: string | null } | void>,

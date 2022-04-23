@@ -5,11 +5,11 @@ import * as React from 'react'
 import { ScrollView } from 'react-native'
 import { type AirshipBridge } from 'react-native-airship'
 
-import s from '../../locales/strings.js'
-import { showToast } from '../services/AirshipInstance.js'
-import { MainButton } from '../themed/MainButton.js'
-import { ModalCloseArrow, ModalMessage, ModalTitle } from '../themed/ModalParts.js'
-import { ThemedModal } from '../themed/ThemedModal.js'
+import s from '../../../locales/strings.js'
+import { showToast } from '../../services/AirshipInstance.js'
+import { MainButton } from '../../themed/MainButton.js'
+import { ModalCloseArrow, ModalMessage, ModalTitle } from '../../themed/ModalParts.js'
+import { ThemedModal } from '../../themed/ThemedModal.js'
 
 type Props = {|
   bridge: AirshipBridge<void>,

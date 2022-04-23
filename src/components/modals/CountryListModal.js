@@ -11,7 +11,7 @@ import s from '../../locales/strings.js'
 import type { CountryData } from '../../types/types'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { SelectableRow } from '../themed/SelectableRow'
-import { ListModal } from './ListModal'
+import { ListModal } from './common/ListModal'
 
 type Props = {
   countryCode: string,

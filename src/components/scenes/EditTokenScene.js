@@ -17,7 +17,7 @@ import { scale } from '../../util/scaling.js'
 import { decimalPlacesToDenomination, denominationToDecimalPlaces, mergeTokensRemoveInvisible } from '../../util/utils'
 import { FormField } from '../common/FormField.js'
 import { SceneWrapper } from '../common/SceneWrapper.js'
-import { ButtonsModal } from '../modals/ButtonsModal.js'
+import { ButtonsModal } from '../modals/common/ButtonsModal.js'
 import { Airship } from '../services/AirshipInstance.js'
 
 type OwnProps = {

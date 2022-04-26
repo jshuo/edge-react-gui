@@ -24,6 +24,59 @@ describe('parseDeepLink', function () {
     })
   })
 
+  describe('requestAddress', () => {
+    makeLinkTests({
+      'edge://reqaddr?codes=eth-btc&post=testpost.com': {
+        type: 'requestAddress',
+        assets: [
+          { nativeCode: 'ETH', tokenCode: 'ETH' },
+          { nativeCode: 'BTC', tokenCode: 'BTC' }
+        ],
+        post: 'testpost.com',
+        redir: undefined,
+        payer: undefined
+      },
+      'edge://reqaddr?codes=eth&post=testpost.com': {
+        type: 'requestAddress',
+        assets: [{ nativeCode: 'ETH', tokenCode: 'ETH' }],
+        post: 'testpost.com',
+        redir: undefined,
+        payer: undefined
+      },
+      'edge://reqaddr?codes=ETH&redir=testredir.com': {
+        type: 'requestAddress',
+        assets: [{ nativeCode: 'ETH', tokenCode: 'ETH' }],
+        post: undefined,
+        redir: 'testredir.com',
+        payer: undefined
+      },
+      'edge://reqaddr?codes=ETH_usdc-BTC-BTC_DOGE&redir=testredir.com&payer=testpayer': {
+        type: 'requestAddress',
+        assets: [
+          { nativeCode: 'ETH', tokenCode: 'USDC' },
+          { nativeCode: 'BTC', tokenCode: 'BTC' },
+          { nativeCode: 'BTC', tokenCode: 'DOGE' }
+        ],
+        post: undefined,
+        redir: 'testredir.com',
+        payer: 'testpayer'
+      },
+      'reqaddr://?codes=ETH_usdc-BTC-BTC_DOGE-LTC-ETH_UNI&redir=testredir.com': {
+        type: 'requestAddress',
+        assets: [
+          { nativeCode: 'ETH', tokenCode: 'USDC' },
+          { nativeCode: 'BTC', tokenCode: 'BTC' },
+          { nativeCode: 'BTC', tokenCode: 'DOGE' },
+          { nativeCode: 'LTC', tokenCode: 'LTC' },
+          { nativeCode: 'ETH', tokenCode: 'UNI' }
+        ],
+        post: undefined,
+        redir: 'testredir.com',
+        payer: undefined
+      }
+    })
+  })
+
   describe('edgeLogin', () => {
     makeLinkTests({
       'edge://edge/1234567890a': {

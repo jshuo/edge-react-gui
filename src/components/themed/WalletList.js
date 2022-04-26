@@ -4,6 +4,7 @@ import * as React from 'react'
 import { FlatList, RefreshControl, SectionList } from 'react-native'
 
 import { selectWallet } from '../../actions/WalletActions.js'
+import { useAllTokens } from '../../hooks/useAllTokens.js'
 import s from '../../locales/strings'
 import { getExchangeDenominationFromState } from '../../selectors/DenominationSelectors.js'
 import { calculateFiatBalance } from '../../selectors/WalletSelectors.js'
@@ -93,6 +94,9 @@ export function WalletList(props: Props) {
   const [activeWalletIds, setActiveWalletIds] = useState(account.activeWalletIds)
   useEffect(() => account.watch('activeWalletIds', setActiveWalletIds), [account])
 
+  // Subscribe to all the tokens in the account:
+  const allTokens = useAllTokens(account)
+
   function sortWalletList(walletList: WalletListItem[]): WalletListItem[] {
     const getFiatBalance = (wallet: GuiWallet, fullCurrencyCode: string): number => {
       const currencyWallet = account.currencyWallets[wallet.id]
@@ -160,10 +164,9 @@ export function WalletList(props: Props) {
           key: walletId
         })
       } else if (wallet != null) {
-        const currencyConfig = account.currencyConfig[wallet.pluginId]
-        const { builtinTokens = {}, currencyInfo, customTokens = {} } = currencyConfig
+        const { enabledTokens, name, pluginId } = asSafeDefaultGuiWallet(wallet)
+        const { currencyInfo } = account.currencyConfig[pluginId]
         const { currencyCode, displayName } = currencyInfo
-        const { enabledTokens, name } = asSafeDefaultGuiWallet(wallet)
 
         // Initialize wallets
         if (checkFilterWallet({ name, currencyCode, currencyName: displayName }, searchText, allowedCurrencyCodes, excludeCurrencyCodes)) {
@@ -175,11 +178,10 @@ export function WalletList(props: Props) {
         }
 
         // Initialize tokens
-        const allTokens = { ...customTokens, ...builtinTokens }
         for (const tokenCode of enabledTokens) {
-          const tokenId = Object.keys(allTokens).find(id => allTokens[id].currencyCode === tokenCode)
+          const tokenId = Object.keys(allTokens[pluginId]).find(id => allTokens[pluginId][id].currencyCode === tokenCode)
           if (tokenId == null) continue
-          const token = allTokens[tokenId]
+          const token = allTokens[pluginId][tokenId]
 
           const fullCurrencyCode = `${currencyCode}-${tokenCode}`
 

@@ -5,19 +5,18 @@ import { type EdgeAccount, type EdgeCurrencyWallet } from 'edge-core-js'
 import { useEffect, useRef } from '../types/reactHooks.js'
 
 type Cleanup = void | (() => void)
-type Subscribe = (wallet: EdgeCurrencyWallet) => Cleanup
 
 type WalletMap = { [walletId: string]: EdgeCurrencyWallet }
 type State = {
   cleanups: Map<string, Cleanup>,
   lastWallets: WalletMap,
-  subscribe: Subscribe
+  subscribe: (wallet: EdgeCurrencyWallet) => Cleanup
 }
 
 /**
  * Maintains subscriptions to all wallets in an account.
  */
-export function useWalletsSubscriber(account: EdgeAccount, subscribe: Subscribe): void {
+export function useWalletsSubscriber(account: EdgeAccount, subscribe: (wallet: EdgeCurrencyWallet) => Cleanup): void {
   const state = useRef<State>({
     cleanups: new Map(),
     lastWallets: {},

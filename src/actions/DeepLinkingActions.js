@@ -13,7 +13,7 @@ import { Actions } from '../types/routerTypes.js'
 import { activatePromotion } from './AccountReferralActions.js'
 import { launchBitPay } from './BitPayActions.js'
 import { loginWithEdge } from './EdgeLoginActions.js'
-import { doReturnAddress, parseScannedUri } from './ScanActions.js'
+import { doRequestAddress, doReturnAddress, parseScannedUri } from './ScanActions.js'
 import { selectWallet } from './WalletActions.js'
 
 /**
@@ -101,6 +101,7 @@ function handleLink(dispatch: Dispatch, state: RootState, link: DeepLink): boole
     }
 
     case 'requestAddress': {
+      doRequestAddress(dispatch, currencyWallets, link)
       return true
     }
 

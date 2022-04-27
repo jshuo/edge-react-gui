@@ -9,7 +9,7 @@ import { PREFERRED_TOKENS, SPECIAL_CURRENCY_INFO } from '../../constants/WalletA
 import { useTokens } from '../../hooks/useTokens.js'
 import { useWalletName } from '../../hooks/useWalletName.js'
 import s from '../../locales/strings.js'
-import { useEffect, useMemo, useState } from '../../types/reactHooks.js'
+import { useCallback, useEffect, useMemo, useState } from '../../types/reactHooks.js'
 import { useSelector } from '../../types/reactRedux.js'
 import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { type FlatListItem } from '../../types/types.js'
@@ -87,7 +87,7 @@ export function ManageTokensScene(props: Props) {
   }, [allTokens, searchValue, sortedTokenIds])
 
   // Shows the wallet picker modal:
-  const handleSelectWallet = async () => {
+  const handleSelectWallet = useCallback(async () => {
     const allowedCurrencyCodes = Object.keys(account.currencyConfig)
       .filter(pluginId => Object.keys(account.currencyConfig[pluginId].builtinTokens ?? {}).length > 0)
       .map(pluginId => account.currencyConfig[pluginId].currencyInfo.currencyCode)
@@ -104,7 +104,34 @@ export function ManageTokensScene(props: Props) {
     if (walletId != null && currencyCode != null) {
       navigation.setParams({ walletId })
     }
-  }
+  }, [account, navigation])
+
+  // Goes to the add token scene:
+  const handleAdd = useCallback(() => {
+    navigation.navigate('editToken', {
+      walletId
+    })
+  }, [navigation, walletId])
+
+  // Renders an individual token row within the list:
+  const renderRow = useCallback(
+    (item: FlatListItem<string>) => {
+      const tokenId = item.item
+      return (
+        <ManageTokensRow
+          // Scene stuff:
+          navigation={navigation}
+          wallet={wallet}
+          // Token stuff:
+          isCustom={customTokens[tokenId] != null}
+          isEnabled={enabledTokenSet.has(tokenId)}
+          token={allTokens[tokenId]}
+          tokenId={item.item}
+        />
+      )
+    },
+    [allTokens, customTokens, enabledTokenSet, navigation, wallet]
+  )
 
   return (
     <SceneWrapper>
@@ -126,46 +153,18 @@ export function ManageTokensScene(props: Props) {
           onChangeText={setSearchValue}
         />
       </SceneHeader>
-      <FlatList
-        data={filteredTokenIds}
-        extraData={allTokens}
-        keyExtractor={tokenId => tokenId}
-        renderItem={(item: FlatListItem<string>) => {
-          const tokenId = item.item
-          return (
-            <ManageTokensRow
-              // Scene stuff:
-              navigation={navigation}
-              wallet={wallet}
-              // Token stuff:
-              isCustom={customTokens[tokenId] != null}
-              isEnabled={enabledTokenSet.has(tokenId)}
-              token={allTokens[tokenId]}
-              tokenId={item.item}
-            />
-          )
-        }}
-        style={styles.tokenList}
-      />
+      <FlatList data={filteredTokenIds} extraData={allTokens} keyExtractor={keyExtractor} renderItem={renderRow} style={styles.tokenList} />
       {!isCustomTokensSupported ? null : (
         <>
           <DividerLine marginRem={[0, 1]} />
-          <MainButton
-            alignSelf="center"
-            label={s.strings.addtoken_add}
-            marginRem={1}
-            type="secondary"
-            onPress={() => {
-              navigation.navigate('editToken', {
-                walletId
-              })
-            }}
-          />
+          <MainButton alignSelf="center" label={s.strings.addtoken_add} marginRem={1} type="secondary" onPress={handleAdd} />
         </>
       )}
     </SceneWrapper>
   )
 }
+
+const keyExtractor = tokenId => tokenId
 
 const getStyles = cacheStyles((theme: Theme) => ({
   rightIcon: {

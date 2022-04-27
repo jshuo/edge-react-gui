@@ -6,7 +6,7 @@ import * as React from 'react'
 import { ScrollView } from 'react-native'
 
 import s from '../../locales/strings.js'
-import { useState } from '../../types/reactHooks.js'
+import { useCallback, useState } from '../../types/reactHooks.js'
 import { useSelector } from '../../types/reactRedux.js'
 import { type NavigationProp, type RouteProp } from '../../types/routerTypes.js'
 import { SceneWrapper } from '../common/SceneWrapper.js'
@@ -45,7 +45,7 @@ export function EditTokenScene(props: Props) {
     return (multiplier.length - 1).toString()
   })
 
-  async function handleDelete() {
+  const handleDelete = useCallback(async () => {
     if (tokenId == null) return
     await Airship.show(bridge => (
       <ButtonsModal
@@ -65,21 +65,9 @@ export function EditTokenScene(props: Props) {
         }}
       />
     ))
-  }
+  }, [navigation, tokenId, wallet])
 
-  async function showMessage(message: string): Promise<void> {
-    Airship.show(bridge => (
-      <ButtonsModal
-        bridge={bridge}
-        message={message}
-        buttons={{
-          ok: { label: s.strings.string_ok_cap }
-        }}
-      />
-    ))
-  }
-
-  async function handleSave() {
+  const handleSave = useCallback(async () => {
     // Validate input:
     const decimals = parseInt(decimalPlaces)
     if (currencyCode === '' || displayName === '' || contractAddress === '') {
@@ -88,6 +76,9 @@ export function EditTokenScene(props: Props) {
     if (isNaN(decimals)) {
       return await showMessage(s.strings.edittoken_invalid_decimal_places)
     }
+    // TODO:
+    // We need to check for conflicts with the other tokens in the account,
+    // both for matching contract addresses and for currency codes.
 
     const token: EdgeToken = {
       currencyCode,
@@ -103,8 +94,6 @@ export function EditTokenScene(props: Props) {
         contractAddress
       }
     }
-    // We should probably expose `getTokenId` from the core,
-    // then check for conflicts before continuing.
 
     if (tokenId != null) {
       await wallet.currencyConfig.changeCustomToken(tokenId, token)
@@ -113,7 +102,7 @@ export function EditTokenScene(props: Props) {
       await wallet.changeEnabledTokenIds([...wallet.enabledTokenIds, tokenId])
     }
     navigation.goBack()
-  }
+  }, [contractAddress, currencyCode, decimalPlaces, displayName, navigation, tokenId, wallet])
 
   return (
     <SceneWrapper avoidKeyboard>
@@ -122,37 +111,37 @@ export function EditTokenScene(props: Props) {
         <OutlinedTextInput
           autoFocus={false}
           label={s.strings.addtoken_currency_code_input_text}
-          marginRem={[0.5, 0.5, 1]}
+          marginRem={marginRem}
           value={currencyCode}
           onChangeText={setCurrencyCode}
         />
         <OutlinedTextInput
           autoFocus={false}
           label={s.strings.addtoken_name_input_text}
-          marginRem={[0.5, 0.5, 1]}
+          marginRem={marginRem}
           value={displayName}
           onChangeText={setDisplayName}
         />
         <OutlinedTextInput
           autoFocus={false}
           label={s.strings.addtoken_contract_address_input_text}
-          marginRem={[0.5, 0.5, 1]}
+          marginRem={marginRem}
           value={contractAddress}
           onChangeText={setContractAddress}
         />
         <OutlinedTextInput
           autoFocus={false}
           label={s.strings.addtoken_denomination_input_text}
-          marginRem={[0.5, 0.5, 1]}
+          marginRem={marginRem}
           value={decimalPlaces}
           onChangeText={setDecimalPlaces}
         />
-        <MainButton alignSelf="center" label={s.strings.string_save} marginRem={[0.5, 0.5, 1]} onPress={handleSave} />
+        <MainButton alignSelf="center" label={s.strings.string_save} marginRem={marginRem} onPress={handleSave} />
         {tokenId == null ? null : (
           <MainButton //
             alignSelf="center"
             label={s.strings.edittoken_delete_token}
-            marginRem={[0.5, 0.5, 1]}
+            marginRem={marginRem}
             type="secondary"
             onPress={handleDelete}
           />
@@ -168,6 +157,21 @@ export function EditTokenScene(props: Props) {
  * where the networkLocation has other contents.
  */
 const asMaybeContractLocation = asMaybe(asObject({ contractAddress: asString }))
+
+async function showMessage(message: string): Promise<void> {
+  Airship.show(bridge => (
+    <ButtonsModal
+      bridge={bridge}
+      message={message}
+      buttons={{
+        ok: { label: s.strings.string_ok_cap }
+      }}
+    />
+  ))
+}
+
+// Nicely spaces the visual elements on the page:
+const marginRem = [0.5, 0.5, 1]
 
 const getStyles = cacheStyles((theme: Theme) => ({
   scroll: {

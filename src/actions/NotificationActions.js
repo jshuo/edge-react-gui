@@ -21,7 +21,7 @@ export const registerNotifications = () => async (dispatch: Dispatch, getState: 
   try {
     await notif1.post(`user/notifications?userId=${encodedUserId}`, { currencyCodes })
   } catch (err) {
-    console.log('Failed to register user for notifications.')
+    // console.log('Failed to register user for notifications.')
   }
 }
 

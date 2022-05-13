@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native'
 
+import { useWatchAccount } from '../../hooks/useWatch.js'
 import s from '../../locales/strings.js'
 import { useEffect, useState } from '../../types/reactHooks.js'
 import { useSelector } from '../../types/reactRedux.js'
@@ -15,10 +16,10 @@ import { WalletListSortModal } from '../modals/WalletListSortModal.js'
 import { Airship, showError } from '../services/AirshipInstance.js'
 import { type Theme, cacheStyles, useTheme } from '../services/ThemeContext.js'
 import { EdgeText } from '../themed/EdgeText.js'
-import { WalletList } from '../themed/WalletList.js'
 import { WalletListFooter } from '../themed/WalletListFooter.js'
 import { WalletListHeader } from '../themed/WalletListHeader.js'
 import { WalletListSortable } from '../themed/WalletListSortable.js'
+import { WalletListSwipeable } from '../themed/WalletListSwipeable.js'
 import { WiredProgressBar } from '../themed/WiredProgressBar.js'
 
 type Props = {}
@@ -37,8 +38,7 @@ export function WalletListScene(props: Props) {
   const needsPasswordCheck = useSelector(state => state.ui.passwordReminder.needsPasswordCheck)
 
   // Subscribe to account state:
-  const [currencyWallets, setCurrencyWallets] = useState(account.currencyWallets)
-  useEffect(() => account.watch('currencyWallets', setCurrencyWallets), [account])
+  const currencyWallets = useWatchAccount(account, 'currencyWallets')
   const loading = Object.keys(currencyWallets).length <= 0
 
   async function handleTutorialModal() {
@@ -85,7 +85,7 @@ export function WalletListScene(props: Props) {
       <View style={styles.listStack}>
         <CrossFade activeKey={loading ? 'spinner' : sorting ? 'sortList' : 'fullList'}>
           <ActivityIndicator key="spinner" color={theme.primaryText} style={styles.listSpinner} size="large" />
-          <WalletList
+          <WalletListSwipeable
             key="fullList"
             header={
               <WalletListHeader
@@ -100,8 +100,8 @@ export function WalletListScene(props: Props) {
             footer={searching ? null : <WalletListFooter />}
             searching={searching}
             searchText={searchText}
-            activateSearch={() => setSearching(true)}
             showSlidingTutorial={showSlidingTutorial}
+            onRefresh={() => setSearching(true)}
           />
           <WalletListSortable key="sortList" />
         </CrossFade>

@@ -28,11 +28,11 @@ import { EdgeContextCallbackManager } from './EdgeContextCallbackManager.js'
 import { NetworkActivity } from './NetworkActivity.js'
 import { PasswordReminderService } from './PasswordReminderService.js'
 import { PermissionsManager } from './PermissionsManager.js'
+import { SortedWalletList } from './SortedWalletList.js'
+import { useTheme } from './ThemeContext'
 import { WalletLifecycle } from './WalletLifecycle.js'
 
-type Props = {
-  context: EdgeContext
-}
+type Props = { context: EdgeContext }
 
 /**
  * Provides various global services to the application,
@@ -41,6 +41,7 @@ type Props = {
 export function Services(props: Props) {
   const { context } = props
   const [account, setAccount] = useState<EdgeAccount | void>()
+  const theme = useTheme()
 
   // The `useRef` hook might make more sense, but it requires an initial value,
   // and we don't want to create dummy stores on each render.
@@ -81,7 +82,7 @@ export function Services(props: Props) {
 
   return (
     <Provider store={store}>
-      <LoginUiProvider>
+      <LoginUiProvider themeOverride={theme}>
         <MenuProvider>
           <Airship>
             <Main />
@@ -91,6 +92,7 @@ export function Services(props: Props) {
         <ContactsLoader />
         <DeepLinkingManager />
         {account == null ? null : <AccountCallbackManager account={account} />}
+        {account == null ? null : <SortedWalletList account={account} />}
         <EdgeContextCallbackManager />
         <PermissionsManager />
         <NetworkActivity />

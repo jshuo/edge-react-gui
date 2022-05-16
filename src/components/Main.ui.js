@@ -32,6 +32,7 @@ import { FioRequestConfirmationScene } from '../components/scenes/FioRequestConf
 import { FioRequestListScene } from '../components/scenes/FioRequestListScene'
 import { FioSentRequestDetailsScene } from '../components/scenes/FioSentRequestDetailsScene'
 import { PromotionSettingsScene } from '../components/scenes/PromotionSettingsScene.js'
+import { ScanConnectSecux } from './scenes/ScanConnectSecureDevice'
 import { SwapSettingsScene } from '../components/scenes/SwapSettingsScene.js'
 import { TransactionsExportScene } from '../components/scenes/TransactionsExportScene.js'
 import { WalletListScene } from '../components/scenes/WalletListScene.js'
@@ -41,6 +42,7 @@ import {
   CHANGE_MINING_FEE,
   CHANGE_PASSWORD,
   CHANGE_PIN,
+  CONNECTBLE,
   CREATE_WALLET_ACCOUNT_SELECT,
   CREATE_WALLET_ACCOUNT_SETUP,
   CREATE_WALLET_CHOICE,
@@ -215,6 +217,7 @@ export class MainComponent extends React.Component<Props> {
         <RouterWithRedux backAndroidHandler={this.handleBack}>
           <Stack key={ROOT} hideNavBar panHandlers={null}>
             <Scene key={LOGIN} component={withNavigation(LoginScene)} initial />
+            {/* <Scene key={CONNECTBLE} component={withNavigation(ScanConnectSecux)}/> */}
             <Scene
               key={EDGE_LOGIN}
               component={withNavigation(ifLoggedIn(EdgeLoginScene))}
